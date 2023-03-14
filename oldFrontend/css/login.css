@@ -1,0 +1,17 @@
+.container {
+   max-width: 20%;
+   margin-top: 10%;
+}
+
+.btn {
+    text-align: center;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
