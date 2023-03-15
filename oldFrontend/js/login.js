@@ -1,5 +1,5 @@
 const loginUser = async () => {
-    const res = await fetch('http://localhost:3001/user/login', {
+    const res = await fetch('http://127.0.0.1:3001/user/login', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
