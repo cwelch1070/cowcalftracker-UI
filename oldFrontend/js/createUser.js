@@ -1,5 +1,7 @@
+const port = '45.58.52.73' || 'localhost:3001'
+
 const createUser = async () => {
-    const res = await fetch('http://localhost:3001/user/create', {
+    const res = await fetch('http://' + port + '/user/create', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
@@ -17,7 +19,7 @@ const createUser = async () => {
     setToken(token)
     
     if(res.status === 201) {
-        location.href = './dashboard.html'
+        location.href = './public/dashboard.html'
     }
 }
 

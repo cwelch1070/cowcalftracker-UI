@@ -1,5 +1,3 @@
-
-
 //GENERATES HTML ELEMENTS AND RENDERS HERD DATA IN THEM
 const generateDOM = async () => {
     //Selects the main HTML div and creates a div for row
@@ -58,7 +56,7 @@ const generateDOM = async () => {
         deleteHerd.textContent = 'Delete Herd'
         deleteHerd.addEventListener('click', (e) => {
             confirmDeleteBtn.addEventListener('click', async (e) => {
-                const response = await fetch('http://localhost:3001/herd/' + herd._id, {
+                const response = await fetch('http://' + port + '/herd/' + herd._id, {
                     method: 'DELETE',
                     mode: 'cors',
                     headers: {

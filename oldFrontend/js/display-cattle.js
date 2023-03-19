@@ -1,5 +1,3 @@
-
-
 //Displays the cattle ONLY to the DOM
 const displayCattle = async (herdId) => {
     const headers = ['Tag #', 'Cow Name']
@@ -32,7 +30,7 @@ const displayCattle = async (herdId) => {
         removeBtn.textContent = 'Remove'
         removeBtn.className = 'btn btn-danger'
         removeBtn.addEventListener('click', async () => {
-            const response = await fetch('http://localhost:3001/cattle/' + cattle._id, {
+            const response = await fetch('http://' + port + '/cattle/' + cattle._id, {
                 method: 'DELETE',
                 mode: 'cors',
                 body: JSON.stringify({

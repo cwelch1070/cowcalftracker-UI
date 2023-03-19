@@ -24,7 +24,7 @@ const addCattle = (herdId) => {
     newCow.addEventListener('click', async (e) =>{
         e.preventDefault()
 
-        const response = await fetch('http://localhost:3001/cattle', {
+        const response = await fetch('http://' + port + '/cattle', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -45,7 +45,7 @@ const addCattle = (herdId) => {
 }
 
 const getCattle = async (herdId) => {
-    const response = await fetch('http://localhost:3001/cattle/' + herdId, {
+    const response = await fetch('http://' + port + '/cattle/' + herdId, {
         method: 'GET',
         mode: 'cors',
         headers: {

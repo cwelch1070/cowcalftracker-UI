@@ -1,3 +1,5 @@
+const port = '45.58.52.73' || 'localhost:3001'
+
 //HANDLES NAMING OF HERD
 const nameHerd = () => {
 
@@ -16,7 +18,7 @@ const nameHerd = () => {
     
     //FETCH REQUEST TO SERVER TO CREATE HERD
     saveButton.addEventListener('click', async (e) => {
-        const response = await fetch('http://localhost:3001/herd', {
+        const response = await fetch('http://' + port + '/herd', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -36,7 +38,7 @@ const nameHerd = () => {
 
 //FETCH THE HERD DATA FROM SERVER
 const getHerdData = async () => {
-    const response = await fetch('http://localhost:3001/herd', {
+    const response = await fetch('http://' + port + '/herd', {
         method: 'GET',
         mode: 'cors',
         headers: {
