@@ -1,4 +1,4 @@
-const port = '45.58.52.73' || 'localhost:3001'
+const port = '45.58.52.73:81' || 'localhost:3001'
 
 //HANDLES NAMING OF HERD
 const nameHerd = () => {
