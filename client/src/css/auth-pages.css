@@ -7,7 +7,7 @@
 
 @media only screen and (max-width: 900px) {
     .formPosition {
-        align-items: center;
+        align-items: center; 
         margin: 0 auto;
         margin-top: 15%;
         max-width: 80%;
