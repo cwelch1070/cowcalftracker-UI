@@ -19,7 +19,7 @@ const createUser = async () => {
     setToken(token)
     
     if(res.status === 201) {
-        location.href = './public/dashboard.html'
+        location.href = './dashboard.html'
     }
 }
 
