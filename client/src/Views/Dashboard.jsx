@@ -25,7 +25,7 @@ const DefaultCard = () => {
 
     return (
         <>
-        <div className=''>
+        <div className='container'>
             <div className='cards'>
                 <div className='defaultCard card-margin' onClick={createHerd}>
                     + New Herd
