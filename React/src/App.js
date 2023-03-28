@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom'
 import Login from './Views/Login'
+import Todo from './Views/Todo'
 import Dashboard from './Views/Dashboard'
 import CreateAccount from './Views/CreateAccount'
 import Herd from './Views/Herd'
@@ -9,7 +10,7 @@ import ErrorPage from './Views/error-page'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Login />,
+    element: <Todo />,
     errorElement: <ErrorPage />
   },
   {
