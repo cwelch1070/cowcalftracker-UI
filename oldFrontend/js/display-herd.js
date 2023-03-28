@@ -68,7 +68,7 @@ const generateDOM = async () => {
                 const data = await response.json()
                 console.log(data)
 
-                location.reload()
+                refresh()
             })
         })
         

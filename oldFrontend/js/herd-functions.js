@@ -32,7 +32,7 @@ const nameHerd = () => {
         const data = await response.json()
         console.log(data)
 
-        location.reload()
+        refresh()
     })
 }
 
@@ -57,4 +57,16 @@ const getHerdData = async () => {
 const clearHTML = () => {
     document.getElementById('table1').innerHTML = "" 
     document.getElementById('table2').innerHTML = ""
+}
+
+/* 
+    This function when called runs getHerdData and generateDOM
+    again to update the data on the page when the user makes a 
+    request to the api. This elimated the page needing to refresh
+    making the web app seem and feel much more like an app.
+*/
+const refresh = () => {
+    getHerdData()
+    generateDOM()
+    document.getElementById('main').innerHTML = ""
 }
