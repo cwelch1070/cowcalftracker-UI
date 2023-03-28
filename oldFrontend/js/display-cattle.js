@@ -30,21 +30,7 @@ const displayCattle = async (herdId) => {
         removeBtn.textContent = 'Remove'
         removeBtn.className = 'btn btn-danger'
         removeBtn.addEventListener('click', async () => {
-            const response = await fetch('http://' + port + '/cattle/' + cattle._id, {
-                method: 'DELETE',
-                mode: 'cors',
-                body: JSON.stringify({
-                    herdId: herdId
-                }),
-                headers: {
-                    'Authorization': getToken(),
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            const data = await response.json()
-            console.log(data)
-            location.reload()
+            removeCow(cattle._id, herdId)
         })
         
         let textNode1

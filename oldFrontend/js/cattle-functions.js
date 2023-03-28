@@ -59,3 +59,24 @@ const getCattle = async (herdId) => {
 
     return data
 }
+
+const removeCow = async (cattleId, herdId) => {
+    const response = await fetch('http://' + port + '/cattle/' + cattleId, {
+            method: 'DELETE',
+            mode: 'cors',
+            body: JSON.stringify({
+                herdId: herdId
+            }),
+            headers: {
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const data = await response.json()
+        console.log(data)
+        
+        refresh()
+        displayCattle(herdId)
+        clearHTML()
+}

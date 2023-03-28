@@ -68,7 +68,9 @@ const generateDOM = async () => {
                 const data = await response.json()
                 console.log(data)
 
-                refresh()
+                //Keeping page refresh after delete 
+                //There is currently no reason to not refresh after a delete
+                location.reload()
             })
         })
         

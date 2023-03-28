@@ -65,8 +65,8 @@ const clearHTML = () => {
     request to the api. This elimated the page needing to refresh
     making the web app seem and feel much more like an app.
 */
-const refresh = () => {
-    getHerdData()
+const refresh = async () => {
+    await getHerdData()
     generateDOM()
     document.getElementById('main').innerHTML = ""
 }
