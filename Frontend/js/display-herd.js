@@ -44,6 +44,7 @@ const generateDOM = async () => {
             displayCattle(herd._id)
         })
 
+        //ROLE CALL BUTTON HANDLER
         const rollCallBtn = document.createElement('button')
         rollCallBtn.textContent = 'Roll Call'
         rollCallBtn.addEventListener('click', (e) => {

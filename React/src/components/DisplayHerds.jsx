@@ -78,7 +78,7 @@ function CreateHerdModal() {
     )
 }
 
-export default function DisplayHerds() {
+function Card() {
     const [herds, setHerds] = useState([])
 
     const getHerdData = async () => {
@@ -102,12 +102,29 @@ export default function DisplayHerds() {
 
     return (
         <>
+            {herds.length > 0 && (
+                <div>
+                    {herds.map(herd => (
+                        <div key={herd._id} className="card">
+                            <div className="card-body">
+                                <h5 className="card-title">{herd.name}</h5>
+                                <p className="card-text">Cattle: {herd.numOfCattle}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </>
+    )
+}
+
+export default function DisplayHerds() {
+
+    return (
+        <>
             <h1 className="display display-4">Available Herds</h1>
             <CreateHerdButton />
-            {/* The main div is where the cards that contain the herds info are appended */}
-            <div> 
-
-            </div>
+            <Card />
             <CreateHerdModal />
         </>
     )
