@@ -1,8 +1,7 @@
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import '../css/auth-pages.css'
 
 const CreateAccount = () => {
-
 
     return ( 
         <div className='container login'>
@@ -25,6 +24,6 @@ const CreateAccount = () => {
             </div>
         </div>
     )
-}
+} 
 
 export default CreateAccount

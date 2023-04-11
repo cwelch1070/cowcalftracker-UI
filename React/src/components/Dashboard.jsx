@@ -1,22 +1,10 @@
 import { Outlet, Link } from 'react-router-dom'
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import '../css/dashboard.css'
+import DisplayHerds from './DisplayHerds'
+import NavBar from './NavBar'
 
-//This is a react component
-const NavBar = () => {
-    return (
-        <div className='nav-bar-container'>
-            <div className='logo'>
-                <p>CowCalfTracker</p>
-            </div>
-            <div className='search-bar'>
-                <input placeholder='Search'/>
-            </div>
-        </div>
-    )
-}
-
-const DefaultCard = () => {
+/* const DefaultCard = () => {
     const [inputList, setInputList] = useState([]);
 
     const createHerd = event => {
@@ -34,21 +22,8 @@ const DefaultCard = () => {
             </div>
         </div> 
         </>
-        
     )
-}
-
-//This is a react component
-const Card = () => {
-    
-    return (   
-        <div className='herdCard card-margin'>
-            <button className='optionsBtn'>. . .</button>
-            <h4>North Pasture</h4>
-            <p>10</p>
-        </div>
-    )
-}
+} */
 
 //This is a react component
 const Dashboard = () => {
@@ -58,8 +33,12 @@ const Dashboard = () => {
             <div>
                 <NavBar />
             </div>
+            <div className='container'>
+                <DisplayHerds />
+            </div>
             <div>
-                <DefaultCard />
+                <Outlet />
+                {/* <Link to={`cattle`}>Display Cattle</Link> */}
             </div>
         </>
     )

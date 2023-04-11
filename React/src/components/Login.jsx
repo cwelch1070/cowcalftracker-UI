@@ -31,7 +31,9 @@ const Login = () => {
     */
     const sendUserLogin = async (e) => {
         e.preventDefault() 
-        const res = await fetch('http://localhost:3001/user/login', {
+        const port = '45.58.52.73:81' || 'localhost:3001';
+
+        const res = await fetch('http://' + port + '/user/login', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
