@@ -21,6 +21,23 @@ function CreateHerdButton() {
 }
 
 function CreateHerdModal() {
+    const [herdName, setHerdName] = useState('')
+    const createHerdRequest = async (herdName) => {
+        const response = await fetch('http://45.58.52.73:81/herd', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                name: herdName
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': getToken()
+            }
+        })
+        const data = await response.json()
+        
+    }
+
     return (
         <>
             {/* The bellow html creates the modal and the form that is used to create and name a herd */}
@@ -36,9 +53,7 @@ function CreateHerdModal() {
                 <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="staticBackdropLabel1">
-                        Create New Herd
-                    </h1>
+                    <h1 className="modal-title fs-5" id="staticBackdropLabel1">Create New Herd</h1>
                     <button
                         type="button"
                         className="btn-close"
@@ -50,26 +65,13 @@ function CreateHerdModal() {
                     <form>
                         <div className="input-group">
                         <span className="input-group-text">Name</span>
-                        <input
-                            className="form-control"
-                            type="text"
-                            id="herd-name"
-                            placeholder="Name Herd"
-                        />
+                        <input className="form-control" type="text" id="herd-name" placeholder="Name Herd" onChange={e => setHerdName(e.target.value)}/>
                         </div>
                     </form>
                     </div>
                     <div className="modal-footer">
-                    <button
-                        type="button"
-                        className="btn btn-danger"
-                        data-bs-dismiss="modal"
-                    >
-                        Cancel
-                    </button>
-                    <button type="submit" className="btn btn-success" id="save-herd">
-                        Save
-                    </button>
+                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" className="btn btn-success" id="save-herd" onClick={() => createHerdRequest(herdName)}>Save</button>
                     </div>
                 </div>
                 </div>
@@ -105,10 +107,11 @@ function Card() {
             {herds.length > 0 && (
                 <div>
                     {herds.map(herd => (
-                        <div key={herd._id} className="card">
+                        <div key={herd._id} className="card mb-2 mt-2">
                             <div className="card-body">
                                 <h5 className="card-title">{herd.name}</h5>
                                 <p className="card-text">Cattle: {herd.numOfCattle}</p>
+                                <p className='card-text'>Last Checked: {herd.dateCreated}</p>
                             </div>
                         </div>
                     ))}

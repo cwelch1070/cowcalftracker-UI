@@ -84,13 +84,3 @@ const Login = () => {
     )
 }
 export default Login
-
-// Create layout for page(Done)
-
-// Add styling(Done)
-
-// Create HTTP request to make POST request to login user(Done)
-
-// Store JWT token(Done)
-
-// Send user to dashboard (Look into react router)(Done)
