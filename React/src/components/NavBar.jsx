@@ -1,13 +1,32 @@
+import { Link } from "react-router-dom"
 //This is a react component
 export default function NavBar() {
     return (
-        <div className='nav-bar-container'>
-            <div className='logo'>
-                <p>CowCalfTracker</p>
-            </div>
-            <div className='search-bar'>
-                <input placeholder='Search'/>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-success">
+            <div className="container-fluid">
+                <Link className="navbar-brand" to={'/Dashboard'}>CowCalfTracker</Link>
+                <button
+                className="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                ><span className="navbar-toggler-icon" /> 
+                </button>
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li className="nav-item">
+                        <a className="nav-link" href="https://github.com/cwelch1070/cowcalftracker">Github</a>
+                    </li>
+                </ul>
+                <form className="d-flex" role="search">
+                    <input className="form-control me-2" type="search" placeholder="Search Cattle" aria-label="Search"/>
+                    <button className="btn btn-outline-dark" type="submit">Search</button>
+                </form>
             </div>
         </div>
+    </nav>
     )
 }

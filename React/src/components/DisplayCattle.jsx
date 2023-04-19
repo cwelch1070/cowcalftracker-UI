@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import NavBar from './NavBar'
 import '../css/DisplayCattle.css'
@@ -26,7 +26,7 @@ function CreateCowModal(props) {
 
     const [cowName, setCowName] = useState('Cow')
     const [tag, setTag] = useState(0)
-    const [note, setNote] = useState('')
+    const [note, setNote] = useState('N/A')
     const createCowRequest = async (cowName, tag) => {
         const response = await fetch('http://45.58.52.73:81/cattle', {
             method: 'POST',
@@ -42,6 +42,7 @@ function CreateCowModal(props) {
             }
         })
         const data = await response.json()
+        console.log(data)
         props.getCattle()
     }
 
@@ -82,28 +83,58 @@ function CreateCowModal(props) {
     )
 }
 
-function EditCowModal({ cowId, getCattle }) {
+function EditCowModal({ getCattle, cowId }) {
     const location = useLocation()
     const { herdId } = location.state
 
-    const [cowName, setCowName] = useState('Cow')
-    const [tag, setTag] = useState(0)
-    const [note, setNote] = useState('')
-    const editCowRequest = async (cowName, tag) => {
+    const [cow, setCow] = useState({
+        name: '',
+        tag: 0,
+        note: ''
+    })
+
+    /* 
+        When the text box is being cleared every tiem back space is pressed it is 
+        setting the name to that value including when it hits an empty string
+        which triggers the else if but by then the state has already been set to an empty string
+    */
+    const handleNameChange = (e) => {
+        //e.preventDefault()
+        if(e.target.value !== '') {
+            setCow({name: e.target.value})
+        } 
+    }
+
+    const handleTagChange = (e) => {
+        if(e.target.value !== 0) {
+            setCow({tag: e.target.value})
+        } 
+    }
+
+    const handleNoteChange = (e) => {
+        if(e.target.value !== '') {
+            setCow({note: e.target.value})
+        } 
+    }
+
+    const editCowRequest = async (cowName, tag, note) => {
         const response = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
             method: 'PATCH',
             mode: 'cors',
             body: JSON.stringify({
                 name: cowName,
                 tag: tag,
+                notes: note,
                 herdId: herdId
             }),
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-        const data = await response.json()
+        const data = await response.json() 
         console.log(data)
+
+        //REFRESH UI
         getCattle()
     }
 
@@ -120,21 +151,21 @@ function EditCowModal({ cowId, getCattle }) {
                             <form>
                                 <div className="input-group">
                                     <span className="input-group-text">Name</span>
-                                    <input className="form-control" type="text" id="herd-name" placeholder="(Optional)" onChange={e => setCowName(e.target.value)}/>
+                                    <input className="form-control" type="text" id="herd-name" placeholder="(Optional)" onChange={handleNameChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Tag</span>
-                                    <input className="form-control" type="text" id="herd-name" placeholder="#" onChange={e => setTag(e.target.value)}/>
+                                    <input className="form-control" type="text" id="herd-name" placeholder="#" onChange={handleTagChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Notes</span>
-                                    <input className="form-control" type="text" id="herd-name" placeholder="Notes" onChange={e => setNote(e.target.value)}/>
+                                    <input className="form-control" type="text" id="herd-name" placeholder="Notes" onChange={handleNoteChange}/>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => editCowRequest(cowName, tag)}>Update</button>
+                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => editCowRequest(cow.name, cow.tag, cow.note)}>Update</button>
                         </div>
                     </div>
                 </div>
@@ -143,7 +174,7 @@ function EditCowModal({ cowId, getCattle }) {
     )
 }
 
-function Card({ cattle, getCattle, getCurrentCowId }) {
+function Card({ cattle, getCattle, passCurrentCowId }) {
     const location = useLocation()
     const { herdId } = location.state
 
@@ -176,7 +207,7 @@ function Card({ cattle, getCattle, getCurrentCowId }) {
                                     <div className='dropdown'>
                                         <button id='options-btn' className='btn dropdown-toggle' type='button' data-bs-toggle='dropdown'>. . .</button>
                                         <ul className='dropdown-menu'>
-                                            <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop3" onClick={() => getCurrentCowId(cow._id)}>Edit</button>
+                                            <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop3" onClick={() => passCurrentCowId(cow._id)}>Edit</button>
                                             <button className='dropdown-item' onClick={() => deleteCow(cow._id)}>Delete</button>
                                         </ul>
                                     </div>
@@ -201,11 +232,11 @@ export default function DisplayCattle() {
     //SETS THE STATE FOR THE CATTLE DATA
     const [cattle, setCattle] = useState([])
 
-    //KEEPS TRACK OF THE CURRENTLY SELECTED COWS ID
+    //KEEPS TRACK OF THE CURRENTLY SELECTED COWS DATA
     const [cowId, setCowId] = useState('')
 
     //GETS THE CATTLE DATA FROM API
-    const getCattle = async () => {
+    const getCattle = useCallback(async () => {
     const res = await fetch('http://45.58.52.73:81/cattle/' + herdId, {
             method: 'GET',
             mode: 'cors',
@@ -216,15 +247,16 @@ export default function DisplayCattle() {
 
         const data = await res.json()
         setCattle(data)
-    }
+    },[herdId]) 
 
-    const passCurretnCowId = (currentCowId) => {
+    //BASICALLY SETTER FUNCTIONS
+    const passCurrentCowId = (currentCowId) => {
         setCowId(currentCowId)
     }
 
     useEffect(() => {
         getCattle()
-    }, [])
+    }, [getCattle]) 
 
     return (
         <>
@@ -241,10 +273,14 @@ export default function DisplayCattle() {
                 <CreateCowModal getCattle={getCattle}/>
             </div>
             <div className='container'>
-                <Card cattle={cattle} getCattle={getCattle} getCurrentCowId={passCurretnCowId} />
+                <Card 
+                cattle={cattle} 
+                getCattle={getCattle} 
+                passCurrentCowId={passCurrentCowId}
+                />
             </div>
             <div>
-                <EditCowModal cowId={cowId} getCattle={getCattle}/>
+                <EditCowModal getCattle={getCattle} cowId={cowId} />
             </div>
         </>
     )

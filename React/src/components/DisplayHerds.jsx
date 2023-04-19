@@ -108,8 +108,6 @@ function CreateHerdModal(props) {
 }
 
 function EditHerdModal(props) {
-   
-    console.log('From Edit Herd Modal: ', props.herdId)
     const [herdName, setHerdName] = useState('Herd')
     const createHerdRequest = async (herdName) => {
         const response = await fetch('http://localhost:3001/herd/' + props.herdId, {
@@ -130,7 +128,6 @@ function EditHerdModal(props) {
     
     return (
         <>
-            {/* The bellow html creates the modal and the form that is used to create and name a herd */}
             <div
                 className="modal fade"
                 id="staticBackdrop2"
