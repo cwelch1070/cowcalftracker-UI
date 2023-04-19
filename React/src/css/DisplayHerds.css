@@ -1,0 +1,16 @@
+#create-herd-btn {
+    width: 100%;
+    font-size: 20px;
+}
+
+#title-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#options-btn {
+    border: none;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
