@@ -110,7 +110,7 @@ function CreateHerdModal(props) {
 function EditHerdModal(props) {
     const [herdName, setHerdName] = useState('Herd')
     const createHerdRequest = async (herdName) => {
-        const response = await fetch('http://localhost:3001/herd/' + props.herdId, {
+        const response = await fetch('http://45.58.52.73:81/herd/' + props.herdId, {
             method: 'PATCH',
             mode: 'cors',
             body: JSON.stringify({
