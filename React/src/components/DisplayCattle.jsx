@@ -93,31 +93,16 @@ function EditCowModal({ getCattle, cowId }) {
         note: ''
     })
 
-    /*
-        The error was that when the name was being set
-        the entire object was being overwritten and only 
-        contained the name value and not the tag and note
-        value. To fix this the spread operator is used
-        which creates a new object retaining the state of 
-        the original tag and note values so they are not 
-        lost. This is why the error kept popping up that 
-        the controlled component was getting set to a value
-        of undefined because it no longer existed after the values
-        were set. 
-    */
-   // SETS THE STATE TO THE USERS INPUT
     const handleNameChange = (e) => {
-        setCow({...cow, name: e.target.value})
+        setCow({name: e.target.value})
     }
 
-    // SETS THE STATE TO THE USERS INPUT
     const handleTagChange = (e) => {
-        setCow({...cow, tag: e.target.value})
+        setCow({tag: e.target.value})
     }
 
-    // SETS THE STATE TO THE USERS INPUT
     const handleNoteChange = (e) => {
-        setCow({...cow, note: e.target.value})
+        setCow({note: e.target.value})
     }
 
     const editCowRequest = async (cowName, tag, note) => {
@@ -140,7 +125,6 @@ function EditCowModal({ getCattle, cowId }) {
         //REFRESH UI
         getCattle()
 
-        //CLEAR INPUT BOX AFTER SUBMIT
         setCow({
             name: '', 
             tag: 0,
