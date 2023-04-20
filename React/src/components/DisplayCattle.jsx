@@ -93,28 +93,31 @@ function EditCowModal({ getCattle, cowId }) {
         note: ''
     })
 
-    /* 
-        When the text box is being cleared every tiem back space is pressed it is 
-        setting the name to that value including when it hits an empty string
-        which triggers the else if but by then the state has already been set to an empty string
+    /*
+        The error was that when the name was being set
+        the entire object was being overwritten and only 
+        contained the name value and not the tag and note
+        value. To fix this the spread operator is used
+        which creates a new object retaining the state of 
+        the original tag and note values so they are not 
+        lost. This is why the error kept popping up that 
+        the controlled component was getting set to a value
+        of undefined because it no longer existed after the values
+        were set. 
     */
+   // SETS THE STATE TO THE USERS INPUT
     const handleNameChange = (e) => {
-        //e.preventDefault()
-        if(e.target.value !== '') {
-            setCow({name: e.target.value})
-        } 
+        setCow({...cow, name: e.target.value})
     }
 
+    // SETS THE STATE TO THE USERS INPUT
     const handleTagChange = (e) => {
-        if(e.target.value !== 0) {
-            setCow({tag: e.target.value})
-        } 
+        setCow({...cow, tag: e.target.value})
     }
 
+    // SETS THE STATE TO THE USERS INPUT
     const handleNoteChange = (e) => {
-        if(e.target.value !== '') {
-            setCow({note: e.target.value})
-        } 
+        setCow({...cow, note: e.target.value})
     }
 
     const editCowRequest = async (cowName, tag, note) => {
@@ -136,6 +139,13 @@ function EditCowModal({ getCattle, cowId }) {
 
         //REFRESH UI
         getCattle()
+
+        //CLEAR INPUT BOX AFTER SUBMIT
+        setCow({
+            name: '', 
+            tag: 0,
+            note: ''
+        })
     }
 
     return (
@@ -151,15 +161,15 @@ function EditCowModal({ getCattle, cowId }) {
                             <form>
                                 <div className="input-group">
                                     <span className="input-group-text">Name</span>
-                                    <input className="form-control" type="text" id="herd-name" placeholder="(Optional)" onChange={handleNameChange}/>
+                                    <input className="form-control" type="text" id="herd-name" value={cow.name} placeholder="(Optional)" onChange={handleNameChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Tag</span>
-                                    <input className="form-control" type="text" id="herd-name" placeholder="#" onChange={handleTagChange}/>
+                                    <input className="form-control" type="number" id="herd-name" value={cow.tag} placeholder="#" onChange={handleTagChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Notes</span>
-                                    <input className="form-control" type="text" id="herd-name" placeholder="Notes" onChange={handleNoteChange}/>
+                                    <input className="form-control" type="text" id="herd-name" value={cow.note} placeholder="Notes" onChange={handleNoteChange}/>
                                 </div>
                             </form>
                         </div>
