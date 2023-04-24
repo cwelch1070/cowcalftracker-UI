@@ -1,2 +1,0 @@
-generateDOM()
-nameHerd()
