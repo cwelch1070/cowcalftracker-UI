@@ -25,7 +25,7 @@ function CreateCowModal(props) {
     const { herdId } = location.state
 
     const [cowName, setCowName] = useState('Cow')
-    const [tag, setTag] = useState(0)
+    const [tag, setTag] = useState('')
     const [note, setNote] = useState('N/A')
     const createCowRequest = async (cowName, tag) => {
         const response = await fetch('http://45.58.52.73:81/cattle', {
@@ -89,7 +89,7 @@ function EditCowModal({ getCattle, cowId }) {
 
     const [cow, setCow] = useState({
         name: '',
-        tag: 0,
+        tag: '',
         note: ''
     })
 
@@ -127,7 +127,7 @@ function EditCowModal({ getCattle, cowId }) {
 
         setCow({
             name: '', 
-            tag: 0,
+            tag: '',
             note: ''
         })
     }
@@ -149,7 +149,7 @@ function EditCowModal({ getCattle, cowId }) {
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Tag</span>
-                                    <input className="form-control" type="number" id="herd-name" value={cow.tag} placeholder="#" onChange={handleTagChange}/>
+                                    <input className="form-control" type="text" id="herd-name" value={cow.tag} placeholder="#" onChange={handleTagChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Notes</span>
