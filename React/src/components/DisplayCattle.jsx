@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
-import { createCattle, editCattle, getCattle, deleteCattle } from '../functions/cattleAPI'
+import { createCattle, updateCow, getCows, deleteCattle } from '../functions/cattleAPI'
 import NavBar from './NavBar'
 import '../css/DisplayCattle.css'
 
-// Displays to button to trigger modal to add a cow to the herd
+// Child Component || Displays to button to trigger modal to add a cow to the herd
 function CreateCowButton() {
     return (
         <>
@@ -22,25 +22,42 @@ function CreateCowButton() {
     )
 }
 
-// Modal that allows user to input information about cow they creating
-function CreateCowModal(props) {
+/* BUG
+
+    Need to send default values if value is not chosen when creating cow
+*/
+
+// Child Component || Modal that allows user to input information about cow they creating
+function CreateCowModal({ getCattle }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
     // State variables
-    const [cowName, setCowName] = useState('Cow')
+    const [cowName, setCowName] = useState('')
     const [tag, setTag] = useState('')
-    const [note, setNote] = useState('N/A')
+    const [note, setNote] = useState('')
 
-    // Function to send request to API to create cow
-    createCattle(cowName, tag, note, herdId)
+    const handleSave = async () => {
+        try {
+             // Function to send request to API to create cow
+            createCattle(cowName, tag, note, herdId)
 
-    // Rerenders pages to reflect changes
-    // Basically call getCattle() to refresh the page
-    props.getCattle()
+            // Rerenders pages to reflect changes
+            // Basically call getCattle() to refresh the page
+            getCattle()
+        } catch (error) {
+            console.error(`Failed to create cow: ${error}`)
+        }
+       
 
+        // Clear State after button click
+        setCowName('')
+        setTag('')
+        setNote('')
+    }
+    
     return (
         <>
             {/* The bellow html creates the modal and the form that is used to create and name a herd */}
@@ -55,21 +72,21 @@ function CreateCowModal(props) {
                             <form>
                                 <div className="input-group">
                                     <span className="input-group-text">Name</span>
-                                    <input className="form-control" type="text" placeholder="(Optional)" onChange={e => setCowName(e.target.value)}/>
+                                    <input className="form-control" type="text" placeholder="(Optional)" value={cowName} onChange={e => setCowName(e.target.value)}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Tag</span>
-                                    <input className="form-control" type="text" placeholder="#" onChange={e => setTag(e.target.value)}/>
+                                    <input className="form-control" type="text" placeholder="#" value={tag} onChange={e => setTag(e.target.value)}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Notes</span>
-                                    <input className="form-control" type="text" placeholder="Notes" onChange={e => setNote(e.target.value)}/>
+                                    <input className="form-control" type="text" placeholder="Notes" value={note} onChange={e => setNote(e.target.value)}/>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => createCowRequest(cowName, tag)}>Save</button>
+                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleSave()}>Save</button>
                         </div>
                     </div>
                 </div>
@@ -80,50 +97,55 @@ function CreateCowModal(props) {
 
 /* TODO 
 
-    Find a better way to get state in this component
+    Need to change route on backend to not require 
+    tag number when editing
 
 */
-// Displays modal for editing a cow
+// Child Component || Displays modal for editing a cow
 function EditCowModal({ getCattle, cowId }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
-    // Object stored in state to get info of cattle
-    const [cow, setCow] = useState({
-        name: '',
-        tag: '',
-        note: ''
-    })
+    // State Variables
+    const [cowName, setCowName] = useState('')
+    const [tag, setTag] = useState('')
+    const [note, setNote] = useState('')
+
+    // Calls teh updateCow function to update the cow
+    // then calls getCattle to rerender UI and clears the form
+    const handleUpdate = async () => {
+        try {
+            // Calls function to send request to api to edit cow
+            updateCow(cowName, tag, note, herdId, cowId)
+
+            // Get cattle from api to reflect changes in UI
+            getCattle()
+        } catch (error) {
+            console.error(`Failed to update cow: ${error}`)
+        }
+        
+        // Reset values of state
+        setCowName('')
+        setTag('')
+        setNote('')
+    }
 
     // Sets state object when name is input
     const handleNameChange = (e) => {
-        setCow({name: e.target.value})
+        setCowName(e.target.value)
     }
 
     // Sets state object when tag is input
     const handleTagChange = (e) => {
-        setCow({tag: e.target.value})
+        setTag(e.target.value)
     }
 
     // Sets state object when note is changes
     const handleNoteChange = (e) => {
-        setCow({note: e.target.value})
+        setNote(e.target.value)
     }
-
-    // Calls function to send request to api to edit cow
-    editCattle(cowName, tag, note, herdId, cowId)
-
-    // Get cattle from api to reflect changes in UI
-    getCattle()
-
-    // Reset values of state
-    setCow({
-        name: '', 
-        tag: '',
-        note: ''
-    })
 
     return (
         <>
@@ -138,21 +160,21 @@ function EditCowModal({ getCattle, cowId }) {
                             <form>
                                 <div className="input-group">
                                     <span className="input-group-text">Name</span>
-                                    <input className="form-control" type="text" id="herd-name" value={cow.name} placeholder="(Optional)" onChange={handleNameChange}/>
+                                    <input className="form-control" type="text" id="herd-name" value={cowName} placeholder="(Optional)" onChange={handleNameChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Tag</span>
-                                    <input className="form-control" type="text" id="herd-name" value={cow.tag} placeholder="#" onChange={handleTagChange}/>
+                                    <input className="form-control" type="text" id="herd-name" value={tag} placeholder="#" onChange={handleTagChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Notes</span>
-                                    <input className="form-control" type="text" id="herd-name" value={cow.note} placeholder="Notes" onChange={handleNoteChange}/>
+                                    <input className="form-control" type="text" id="herd-name" value={note} placeholder="Notes" onChange={handleNoteChange}/>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => editCowRequest(cow.name, cow.tag, cow.note)}>Update</button>
+                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleUpdate()}>Update</button>
                         </div>
                     </div>
                 </div>
@@ -161,17 +183,21 @@ function EditCowModal({ getCattle, cowId }) {
     )
 }
 
+// Child Component || Renders Card
 function Card({ cattle, getCattle, passCurrentCowId }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
-    // Calls function to send request to api to delete cow
-    deleteCattle(cowId, herdId)
+    const handleDelete = async (cowId) => {
+        // Calls function to send request to api to delete cow
+        deleteCattle(cowId, herdId)
 
-    // Calls getCattle to reflect changes in UI
-    getCattle()
+        // Calls getCattle to reflect changes in UI
+        getCattle()
+    }
+    
 
     return (
         <>
@@ -186,7 +212,7 @@ function Card({ cattle, getCattle, passCurrentCowId }) {
                                         <button id='options-btn' className='btn dropdown-toggle' type='button' data-bs-toggle='dropdown'>. . .</button>
                                         <ul className='dropdown-menu'>
                                             <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop3" onClick={() => passCurrentCowId(cow._id)}>Edit</button>
-                                            <button className='dropdown-item' onClick={() => deleteCow(cow._id)}>Delete</button>
+                                            <button className='dropdown-item' onClick={() => handleDelete(cow._id)}>Delete</button>
                                         </ul>
                                     </div>
                                 </div>
@@ -201,11 +227,12 @@ function Card({ cattle, getCattle, passCurrentCowId }) {
     )
 }
 
+// Parent Component || Called in dashboard component when rendered
 export default function DisplayCattle() {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
-    const { herdId } = location.state
+    const { herdId, herdName } = location.state
 
     // SETS THE STATE FOR THE CATTLE DATA
     const [cattle, setCattle] = useState([])
@@ -213,10 +240,16 @@ export default function DisplayCattle() {
     // KEEPS TRACK OF THE CURRENTLY SELECTED COWS DATA
     const [cowId, setCowId] = useState('')
 
-    const callGetCattle = async () => {
-        // GETS THE CATTLE DATA FROM API
-        const data = await getCattle(herdId)
-        setCattle(data)
+    // Calls the function getCows to make request to api to get all cattle in db
+    const getCattle = async () => {
+        try {
+            // GETS THE CATTLE DATA FROM API
+            const data = await getCows(herdId)
+            // Stores json data returned from getCows() in state
+            setCattle(data)
+        } catch (error) {
+            console.error(`Could not get cattle: ${error}`)
+        }
     }
     
     // Gets the cowId from the cow that is clicked and sets it in state
@@ -224,6 +257,7 @@ export default function DisplayCattle() {
         setCowId(currentCowId)
     }
 
+    // Still don't know what this does something with how many times it is called 
     useEffect(() => {
         getCattle()
     }, [getCattle]) 

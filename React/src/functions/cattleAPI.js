@@ -1,6 +1,6 @@
 // Makes request to server to create a cow
 export const createCattle = async (cowName, tag, note, herdId) => {
-    const response = await fetch('http://45.58.52.73:81/cattle', {
+    const res = await fetch('http://45.58.52.73:81/cattle', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -14,11 +14,13 @@ export const createCattle = async (cowName, tag, note, herdId) => {
             }
         })
 
-        const data = await response.json()
+        // Gets return from api
+        const data = await res.json()
         console.log(data)
 }
 
-export const getCattle = async (herdId) => {
+// Gets all cattle from db
+export const getCows = async (herdId) => {
     const res = await fetch('http://45.58.52.73:81/cattle/' + herdId, {
             method: 'GET',
             mode: 'cors',
@@ -27,13 +29,16 @@ export const getCattle = async (herdId) => {
             }
         })
 
+        // Gets return from api
         const data = await res.json()
-
+        
+        // Returns json data to be used in component
         return data
 }
 
-export const editCattle = async (cowName, tag, note, herdId, cowId) => {
-    const response = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
+// Updates existing cow in db
+export const updateCow = async (cowName, tag, note, herdId, cowId) => {
+    const res = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
             method: 'PATCH',
             mode: 'cors',
             body: JSON.stringify({
@@ -46,22 +51,27 @@ export const editCattle = async (cowName, tag, note, herdId, cowId) => {
                 'Content-Type': 'application/json',
             }
         })
-        const data = await response.json() 
+
+        // Gets return from api
+        const data = await res.json() 
         console.log(data)
 }
 
+// Delete Cow from db
 export const deleteCattle = async (cowId, herdId) => {
-    const response = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
-                    method: 'DELETE',
-                    mode: 'cors',
-                    body: JSON.stringify({
-                        herdId: herdId
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
+    const res = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
+            method: 'DELETE',
+            mode: 'cors',
+            body: JSON.stringify({
+                herdId: herdId
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
 
-                const data = await response.json()
-                console.log(data)
+        // Gets return from api
+        const data = await res.json()
+        // Logs to console
+        console.log(data)
 }
