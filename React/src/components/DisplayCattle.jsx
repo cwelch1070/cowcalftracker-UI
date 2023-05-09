@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
+import { createCattle, editCattle, getCattle, deleteCattle } from '../functions/cattleAPI'
 import NavBar from './NavBar'
 import '../css/DisplayCattle.css'
 
+// Displays to button to trigger modal to add a cow to the herd
 function CreateCowButton() {
     return (
         <>
@@ -20,31 +22,24 @@ function CreateCowButton() {
     )
 }
 
+// Modal that allows user to input information about cow they creating
 function CreateCowModal(props) {
+    // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
+    // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
+    // State variables
     const [cowName, setCowName] = useState('Cow')
     const [tag, setTag] = useState('')
     const [note, setNote] = useState('N/A')
-    const createCowRequest = async (cowName, tag) => {
-        const response = await fetch('http://45.58.52.73:81/cattle', {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify({
-                name: cowName,
-                tag: tag,
-                notes: note,
-                herdId: herdId
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        const data = await response.json()
-        console.log(data)
-        props.getCattle()
-    }
+
+    // Function to send request to API to create cow
+    createCattle(cowName, tag, note, herdId)
+
+    // Rerenders pages to reflect changes
+    // Basically call getCattle() to refresh the page
+    props.getCattle()
 
     return (
         <>
@@ -83,54 +78,52 @@ function CreateCowModal(props) {
     )
 }
 
+/* TODO 
+
+    Find a better way to get state in this component
+
+*/
+// Displays modal for editing a cow
 function EditCowModal({ getCattle, cowId }) {
+    // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
+    // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
+    // Object stored in state to get info of cattle
     const [cow, setCow] = useState({
         name: '',
         tag: '',
         note: ''
     })
 
+    // Sets state object when name is input
     const handleNameChange = (e) => {
         setCow({name: e.target.value})
     }
 
+    // Sets state object when tag is input
     const handleTagChange = (e) => {
         setCow({tag: e.target.value})
     }
 
+    // Sets state object when note is changes
     const handleNoteChange = (e) => {
         setCow({note: e.target.value})
     }
 
-    const editCowRequest = async (cowName, tag, note) => {
-        const response = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
-            method: 'PATCH',
-            mode: 'cors',
-            body: JSON.stringify({
-                name: cowName,
-                tag: tag,
-                notes: note,
-                herdId: herdId
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        const data = await response.json() 
-        console.log(data)
+    // Calls function to send request to api to edit cow
+    editCattle(cowName, tag, note, herdId, cowId)
 
-        //REFRESH UI
-        getCattle()
+    // Get cattle from api to reflect changes in UI
+    getCattle()
 
-        setCow({
-            name: '', 
-            tag: '',
-            note: ''
-        })
-    }
+    // Reset values of state
+    setCow({
+        name: '', 
+        tag: '',
+        note: ''
+    })
 
     return (
         <>
@@ -169,25 +162,16 @@ function EditCowModal({ getCattle, cowId }) {
 }
 
 function Card({ cattle, getCattle, passCurrentCowId }) {
+    // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
+    // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
-    const deleteCow = async (cowId) => {
-        const response = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
-                    method: 'DELETE',
-                    mode: 'cors',
-                    body: JSON.stringify({
-                        herdId: herdId
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
+    // Calls function to send request to api to delete cow
+    deleteCattle(cowId, herdId)
 
-                const data = await response.json()
-                console.log(data)
-                getCattle()
-    }
+    // Calls getCattle to reflect changes in UI
+    getCattle()
 
     return (
         <>
@@ -218,32 +202,24 @@ function Card({ cattle, getCattle, passCurrentCowId }) {
 }
 
 export default function DisplayCattle() {
-
-    //GETS THE STATE THAT IS PASSED FROM DISPLAYHERD
+    // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
-    const { herdId, herdName } = location.state
+    // Allows this component to use herdId like a state variable
+    const { herdId } = location.state
 
-    //SETS THE STATE FOR THE CATTLE DATA
+    // SETS THE STATE FOR THE CATTLE DATA
     const [cattle, setCattle] = useState([])
 
-    //KEEPS TRACK OF THE CURRENTLY SELECTED COWS DATA
+    // KEEPS TRACK OF THE CURRENTLY SELECTED COWS DATA
     const [cowId, setCowId] = useState('')
 
-    //GETS THE CATTLE DATA FROM API
-    const getCattle = useCallback(async () => {
-    const res = await fetch('http://45.58.52.73:81/cattle/' + herdId, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        const data = await res.json()
+    const callGetCattle = async () => {
+        // GETS THE CATTLE DATA FROM API
+        const data = await getCattle(herdId)
         setCattle(data)
-    },[herdId]) 
-
-    //BASICALLY SETTER FUNCTIONS
+    }
+    
+    // Gets the cowId from the cow that is clicked and sets it in state
     const passCurrentCowId = (currentCowId) => {
         setCowId(currentCowId)
     }

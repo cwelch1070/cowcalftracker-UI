@@ -22,20 +22,17 @@ class cowcalftracker:
          
         # Opens Instagram login page
         self.driver.get("http://www.cowcalftracker.com")
-        sleep(2) 
+        sleep(5) 
         
         def createHerd():
             # Automatically enters your username and password 
             self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div/form/div[1]/input').send_keys(self.username)
+            sleep(1)
             self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div/form/div[2]/input').send_keys(self.password)
             
             # Clicks on Log In Button
             self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div/form/div[3]/button').click()
             sleep(2)
-    
-            # Bonus: Automatically clicks on 'Not Now'
-            # when Instagram asks to show notifications
-            # self.driver.find_element(By.XPATH, "//button[contains(text(), 'Not Now')]").click()
 
             # Clicks create herd btn
             self.driver.find_element(By.XPATH, '//*[@id="create-herd-btn"]').click()
@@ -70,7 +67,7 @@ class cowcalftracker:
             # Seed the random number generator       
             seed(1)
 
-            for i in range(10):
+            for i in range(5):
                 tagNum = randint(0, 10)
 
                 # Added cattle tag
