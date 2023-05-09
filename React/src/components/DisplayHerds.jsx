@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getToken } from '../auth/store-token'
+import { getHerd, editHerd, createHerd, deleteHerd } from '../functions/herdAPI'
 import '../css/DisplayHerds.css'
 
 function HerdCreatedAlert() {
@@ -44,25 +45,28 @@ function CreateHerdButton() {
     )
 }
 
-function CreateHerdModal(props) {
-    const [herdName, setHerdName] = useState('Herd')
-    const createHerdRequest = async (herdName) => {
-        const response = await fetch('http://45.58.52.73:81/herd', {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify({
-                name: herdName
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': getToken()
-            }
-        })
-        const data = await response.json()
-        console.log(data)
+function CreateHerdModal({ getHerdData }) {
+    // State Variable
+    const [herdName, setHerdName] = useState('')
 
-        props.getHerdData()
-        
+    // Handles submit button click
+    const handleSave = async () => {
+        try {
+            // Calls function to send request to api to create herd
+            createHerd(herdName)
+
+            // Rerenders UI 
+            getHerdData()
+
+            // Clears the text boxs after click
+            setHerdName('')
+        } catch (error) {
+            console.error(`Could not create herd: ${error}`)
+        }
+    }
+
+    const handleHerdName = (e) => {
+        setHerdName(e.target.value)
     }
    
     return (
@@ -92,13 +96,13 @@ function CreateHerdModal(props) {
                     <form>
                         <div className="input-group">
                         <span className="input-group-text">Name</span>
-                        <input className="form-control" type="text" id="herd-name" placeholder="Name Herd" onChange={e => setHerdName(e.target.value)}/>
+                        <input className="form-control" type="text" id="herd-name" placeholder="Name Herd" value={herdName} onChange={handleHerdName}/>
                         </div>
                     </form>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" className="btn btn-success" id="save-herd" onClick={() => createHerdRequest(herdName)}>Save</button>
+                        <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleSave()}>Save</button>
                     </div>
                 </div>
                 </div>
@@ -107,23 +111,21 @@ function CreateHerdModal(props) {
     )
 }
 
-function EditHerdModal(props) {
+function EditHerdModal({ getHerdData, herdId }) {
+    // Stores herdName
     const [herdName, setHerdName] = useState('Herd')
-    const createHerdRequest = async (herdName) => {
-        const response = await fetch('http://45.58.52.73:81/herd/' + props.herdId, {
-            method: 'PATCH',
-            mode: 'cors',
-            body: JSON.stringify({
-                name: herdName
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': getToken()
-            }
-        })
-        const data = await response.json()
-        console.log(data)
-        props.getHerdData()
+
+    // Calls functions when Update button is clicked
+    const handleUpdate = async (herdName) => {
+        try {
+            // Calls function to send request to api
+            editHerd(herdName, herdId)
+
+            // Rerenders UI to reflect changes
+            getHerdData()
+        } catch (error) {
+            console.error(`Failed to update: ${error}`)
+        }
     }
     
     return (
@@ -151,14 +153,14 @@ function EditHerdModal(props) {
                     <div className="modal-body">
                     <form>
                         <div className="input-group">
-                        <span className="input-group-text">Name</span>
-                        <input className="form-control" type="text" id="herd-name" placeholder="Rename Herd" onChange={e => setHerdName(e.target.value)}/>
+                            <span className="input-group-text">Name</span>
+                            <input className="form-control" type="text" id="herd-name" placeholder="Rename Herd" value={herdName} onChange={e => setHerdName(e.target.value)}/>
                         </div>
                     </form>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" className="btn btn-success" id="save-herd" onClick={() => createHerdRequest(herdName)}>Update</button>
+                        <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleUpdate()}>Update</button>
                     </div>
                 </div>
                 </div>
@@ -167,27 +169,24 @@ function EditHerdModal(props) {
     )
 }
 
-function Card(props) {
-    const deleteHerd = async (herdId) => {
-        const response = await fetch('http://45.58.52.73:81/herd/' + herdId, {
-                    method: 'DELETE',
-                    mode: 'cors',
-                    headers: {
-                        'Authorization': getToken(),
-                        'Content-Type': 'application/json'
-                    }
-                })
+function Card({ getHerdData, herds, getCurrentHerdId }) {
+    const handleDelete = async (herdId) => {
+        try {
+            // 
+            deleteHerd(herdId)
 
-                const data = await response.json()
-                console.log(data)
-                props.getHerdData()
+            // 
+            getHerdData()
+        } catch (error) {
+            console.error(`Failed to delete: ${error}`)
+        }     
     }
 
     return (
         <>
-            {props.herds.length > 0 && (
+            {herds.length > 0 && (
                 <div>
-                    {props.herds.map(herd => (
+                    {herds.map(herd => (
                         <div key={herd._id} className="card mb-2 mt-2">
                             <div className="card-body" id='herd-card'>
                                 <div id='title-group'>
@@ -196,8 +195,8 @@ function Card(props) {
                                         <button id='options-btn' className='btn dropdown-toggle' type='button' data-bs-toggle='dropdown'>. . .</button>
                                         <ul className='dropdown-menu'>
                                             <Link to='/Cattle' state={{herdId: herd._id, herdName: herd.name}} className='dropdown-item'>Cattle</Link>
-                                            <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop2" onClick={() => props.getCurrentHerdId(herd._id)}>Edit Herd</button>
-                                            <button className='dropdown-item' onClick={() => deleteHerd(herd._id)}>Delete Herd</button>
+                                            <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop2" onClick={() => getCurrentHerdId(herd._id)}>Edit Herd</button>
+                                            <button className='dropdown-item' onClick={() => handleDelete(herd._id)}>Delete Herd</button>
                                         </ul>
                                     </div>
                                 </div>
@@ -213,25 +212,16 @@ function Card(props) {
 }
 
 export default function DisplayHerds() {
-    //KEEPS TRACK OF WHAT HERD IS CURRENTLY SELECTED
+    // KEEPS TRACK OF WHAT HERD IS CURRENTLY SELECTED
     const [herdId, setHerdId] = useState('')
-    //STORES AND KEEPS TRACK OF ALL HERD DATA OF HERD THAT IS CURRENTLY SELECTED
+    // STORES AND KEEPS TRACK OF ALL HERD DATA OF HERD THAT IS CURRENTLY SELECTED
     const [herds, setHerds] = useState([])
-    //SENDS FETCH REQUEST TO SERVER TO GET ALL HERD DATA
+    // SENDS FETCH REQUEST TO SERVER TO GET ALL HERD DATA
     const getHerdData = async () => {
-        const response = await fetch('http://45.58.52.73:81/herd', {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Authorization': getToken(),
-                'Content-Type': 'application/json'  
-            }
-        })
-    
-        const data = await response.json()
+        const data = await getHerd()
         setHerds(data)
     }
-    //SETS THE HERDID OF THE CURRENTLY SELECTED HERD
+    // SETS THE HERDID OF THE CURRENTLY SELECTED HERD
     const passCurrentHerdId = (curretnHerdId) => {
         setHerdId(curretnHerdId)
     }
@@ -243,7 +233,7 @@ export default function DisplayHerds() {
     */
     useEffect(() => {
         getHerdData()
-    }, [])
+    }, [getHerdData])
 
     return (
         <>

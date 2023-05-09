@@ -1,9 +1,11 @@
 import react, { useState} from 'react'
-import { setToken } from '../auth/store-token'
-import { useNavigate, Outlet, Link } from "react-router-dom"
+import { login } from '../functions/loginAPI'
+import { useNavigate, Link } from "react-router-dom"
 import '../css/auth-pages.css'
 
-const Login = () => {
+// Renders login form
+export default function Login() {
+    // Allow to redirect user to dashboard
     const navigate = useNavigate()
     /*
         This creates a variable email and password and uses the state component
@@ -31,28 +33,17 @@ const Login = () => {
     */
     const sendUserLogin = async (e) => {
         e.preventDefault() 
-        const port = '45.58.52.73:81' || 'localhost:3001';
-
-        const res = await fetch('http://' + port + '/user/login', {
-        method: 'POST',
-        mode: 'cors',
-        body: JSON.stringify({
-            email: email,
-            password: password
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-
-        const data = await res.json()
-        const token = data.token
-        
-        setToken(token)
-
-        if(res.status === 200) {
-            console.log('Status code was 200!')
-            navigate('/Dashboard')
+        try {
+            // Calls function to send request to login user and returns status
+            const res = await login(email, password)
+            
+            // If the status returned from the request is 200 login user
+            if(res === 200) {
+                console.log('Status code was 200!')
+                navigate('/Dashboard')
+            }
+        } catch (error) {
+            console.log(`Failed to login user: ${error}`)
         }
     }
 
@@ -83,4 +74,3 @@ const Login = () => {
         </div>
     )
 }
-export default Login

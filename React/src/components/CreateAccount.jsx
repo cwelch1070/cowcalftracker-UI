@@ -1,33 +1,28 @@
 import { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import '../css/auth-pages.css'
-import { setToken } from '../auth/store-token';
+import { createUser } from '../functions/loginAPI'
 
+// Renders the Create Account page
 export default function CreateAccount() {
     const navigate = useNavigate()
+
+    // State variables to store email and password
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const res = await fetch('http://45.58.52.73:81/user/create', {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify({
-                email: email,
-                password: password
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }  
-        })
-
-        const data = await res.json()
-        const token = data.token
-        setToken(token)
-
-        if(res.status === 201) {
-            navigate('/Dashboard')
+        try {
+            // Calls function to send request to api to create user and returns the status of the request
+            const res = await createUser(email, password)
+            
+            // If server responds with 201 status login to dashboard
+            if(res === 201) {
+                navigate('/Dashboard')
+            }
+        } catch (error) {
+            console.error(`Failed to create user: ${error}`)
         }
     }
 
