@@ -43,7 +43,7 @@ export default function Login() {
                 navigate('/Dashboard')
             }
         } catch (error) {
-            console.log(`Failed to login user: ${error}`)
+            console.error(`Failed to login user: ${error}`)
         }
     }
 
