@@ -34,6 +34,10 @@ export const createHerd = async (herdName) => {
         })
         const data = await response.json()
         console.log(data)
+
+        if(data) {
+            return true
+        }
 }
 
 // Update herd request to api

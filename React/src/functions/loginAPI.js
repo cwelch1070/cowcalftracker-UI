@@ -3,7 +3,7 @@ import { setToken } from '../auth/store-token';
 
 // Sends request to server to login user
 export const login = async (email, password) => {
-    const res = await fetch('http://45.58.52.73:81' + '/user/login', {
+    const res = await fetch('http://45.58.52.73:81/user/login', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({

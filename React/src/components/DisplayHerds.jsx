@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getToken } from '../auth/store-token'
 import { getHerd, editHerd, createHerd, deleteHerd } from '../functions/herdAPI'
 import '../css/DisplayHerds.css'
 
-function HerdCreatedAlert() {
+function HerdCreatedAlert({ alert }) {
     return (
-        <div className="alert alert-success" role="alert">
-            Herd has been saved.
-        </div>
+        <>
+            {alert && (
+                <div className="alert alert-success" role="alert">
+                    Herd Succesfully Created
+                    <button type="button" className="btn-close" aria-label="Close"></button>
+                </div> 
+            )}
+        </>    
     )
 }
 
@@ -48,13 +52,14 @@ function CreateHerdButton() {
 function CreateHerdModal({ getHerdData }) {
     // State Variable
     const [herdName, setHerdName] = useState('')
+    const [alert, setAlert] = useState('')
 
     // Handles submit button click
     const handleSave = async () => {
         try {
             // Calls function to send request to api to create herd
-            createHerd(herdName)
-
+            const data = await createHerd(herdName)
+            setAlert(data)
             // Rerenders UI 
             getHerdData()
 
@@ -63,6 +68,10 @@ function CreateHerdModal({ getHerdData }) {
         } catch (error) {
             console.error(`Could not create herd: ${error}`)
         }
+    }
+
+    const handleClose = () => {
+        setAlert('')
     }
 
     const handleHerdName = (e) => {
@@ -79,33 +88,30 @@ function CreateHerdModal({ getHerdData }) {
                 data-bs-keyboard="false"
                 tabIndex={-1}
                 aria-labelledby="staticBackdropLabel1"
-                aria-hidden="true"
-            >
+                aria-hidden="true">
+                <div className='container w'>
+                   <HerdCreatedAlert alert={alert} /> 
+                </div>
                 <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="staticBackdropLabel1">Create New Herd</h1>
-                    <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    />
-                    </div>
-                    <div className="modal-body">
-                    <form>
-                        <div className="input-group">
-                        <span className="input-group-text">Name</span>
-                        <input className="form-control" type="text" id="herd-name" placeholder="Name Herd" value={herdName} onChange={handleHerdName}/>
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel1">Create New Herd</h1>
+                            <button type="button" className="btn-close" onClick={handleClose} data-bs-dismiss="modal" aria-label="Close"/>
                         </div>
-                    </form>
+                        <div className="modal-body">
+                            <form>
+                                <div className="input-group">
+                                <span className="input-group-text">Name</span>
+                                <input className="form-control" type="text" id="herd-name" placeholder="Name Herd" value={herdName} onChange={handleHerdName}/>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={handleClose} >Cancel</button>
+                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleSave()}>Save</button>
+                        </div>
                     </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleSave()}>Save</button>
-                    </div>
-                </div>
-                </div>
+                </div>                
             </div>
         </>
     )
@@ -236,12 +242,12 @@ export default function DisplayHerds() {
     }, [getHerdData])
 
     return (
-        <>
+        <div className='container'>
             <h1 className="display display-4">Available Herds</h1>
             <CreateHerdButton />
             <Card herds={herds} getCurrentHerdId={passCurrentHerdId} getHerdData={getHerdData}  />
             <CreateHerdModal getHerdData={getHerdData} />
             <EditHerdModal herdId={herdId} getHerdData={getHerdData}/>
-        </>
+        </div>
     )
 }

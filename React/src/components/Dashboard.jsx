@@ -8,15 +8,9 @@ const Dashboard = () => {
 
     return (
         <>
-            <div>
-                <NavBar />
-            </div>
-            <div className='container'>
-                <DisplayHerds />
-            </div>
-            <div>
-                <Outlet />
-            </div>
+            <NavBar />
+            <DisplayHerds />
+            <Outlet />
         </>
     )
 }
