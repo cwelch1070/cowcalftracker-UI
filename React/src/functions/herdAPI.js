@@ -1,8 +1,12 @@
+// Import auth file to get session token for auth
 import { getToken } from '../auth/store-token'
+
+// Get api path from .env
+const api = process.env.REACT_APP_API
 
 // Get herd request to api
 export const getHerd = async () => {
-    const response = await fetch('http://45.58.52.73:81/herd', {
+    const response = await fetch(`${api}/herd`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -21,7 +25,7 @@ export const getHerd = async () => {
 // Create herd request to api
 export const createHerd = async (herdName) => {
     console.log(herdName)
-    const response = await fetch('http://45.58.52.73:81/herd', {
+    const response = await fetch(`${api}/herd`, {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -42,7 +46,7 @@ export const createHerd = async (herdName) => {
 
 // Update herd request to api
 export const editHerd = async (herdName, herdId) => {
-    const response = await fetch('http://45.58.52.73:81/herd/' + herdId, {
+    const response = await fetch(`${api}/herd/${herdId}`, {
             method: 'PATCH',
             mode: 'cors',
             body: JSON.stringify({
@@ -59,7 +63,7 @@ export const editHerd = async (herdName, herdId) => {
 
 // Delete herd from db
 export const deleteHerd = async (herdId) => {
-    const response = await fetch('http://45.58.52.73:81/herd/' + herdId, {
+    const response = await fetch(`${api}/herd/${herdId}`, {
             method: 'DELETE',
             mode: 'cors',
             headers: {

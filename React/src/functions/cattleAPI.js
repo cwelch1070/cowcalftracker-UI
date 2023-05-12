@@ -1,6 +1,9 @@
+// Get api path from .env
+const api = process.env.REACT_APP_API
+
 // Makes request to server to create a cow
 export const createCattle = async (cowName, tag, note, herdId) => {
-    const res = await fetch('http://45.58.52.73:81/cattle', {
+    const res = await fetch(`${api}/cattle`, {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
@@ -21,7 +24,7 @@ export const createCattle = async (cowName, tag, note, herdId) => {
 
 // Gets all cattle from db
 export const getCows = async (herdId) => {
-    const res = await fetch('http://45.58.52.73:81/cattle/' + herdId, {
+    const res = await fetch(`${api}/cattle/${herdId}`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -38,7 +41,7 @@ export const getCows = async (herdId) => {
 
 // Updates existing cow in db
 export const updateCow = async (cowName, tag, note, herdId, cowId) => {
-    const res = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
+    const res = await fetch(`${api}/cattle/${cowId}`, {
             method: 'PATCH',
             mode: 'cors',
             body: JSON.stringify({
@@ -59,7 +62,7 @@ export const updateCow = async (cowName, tag, note, herdId, cowId) => {
 
 // Delete Cow from db
 export const deleteCattle = async (cowId, herdId) => {
-    const res = await fetch('http://45.58.52.73:81/cattle/' + cowId, {
+    const res = await fetch(`${api}/cattle/${cowId}`, {
             method: 'DELETE',
             mode: 'cors',
             body: JSON.stringify({

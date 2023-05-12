@@ -1,9 +1,12 @@
 // setToken function to authenticate the current session
 import { setToken } from '../auth/store-token';
 
+// Get api path from .env
+const api = process.env.REACT_APP_API
+
 // Sends request to server to login user
 export const login = async (email, password) => {
-    const res = await fetch('http://45.58.52.73:81/user/login', {
+    const res = await fetch(`${api}/user/login`, {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
@@ -30,7 +33,7 @@ export const login = async (email, password) => {
 
 // sends request to server to create user
 export const createUser = async (email, password) => {
-    const res = await fetch('http://45.58.52.73:81/user/create', {
+    const res = await fetch(`${api}/user/create`, {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
