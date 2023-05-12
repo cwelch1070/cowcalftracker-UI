@@ -1,4 +1,5 @@
-// setToken function to authenticate the current session
+// setToken function to authenticate the current session 
+// scp -r -P 43776 D:\cwelch\cowcalftracker.com\cowcalftracker-UI\React\build webapp@45.58.52.73:/home/webapp/react
 import { setToken } from '../auth/store-token';
 
 // Get api path from .env
@@ -6,7 +7,7 @@ const api = process.env.REACT_APP_API
 
 // Sends request to server to login user
 export const login = async (email, password) => {
-    const res = await fetch('https://www.cowcalftracker.com/api/user/login', {
+    const res = await fetch(`${api}/user/login`, {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
