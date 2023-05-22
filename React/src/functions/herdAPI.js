@@ -1,7 +1,6 @@
 // Import auth file to get session token for auth
 import { getToken } from '../auth/store-token'
 
-// Get api path from .env
 const api = process.env.REACT_APP_API
 
 // Get herd request to api

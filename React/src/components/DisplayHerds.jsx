@@ -239,7 +239,7 @@ export default function DisplayHerds() {
     */
     useEffect(() => {
         getHerdData()
-    }, [getHerdData])
+    }, [])
 
     return (
         <div className='container'>

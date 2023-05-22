@@ -1,4 +1,3 @@
-// Get api path from .env
 const api = process.env.REACT_APP_API
 
 // Makes request to server to create a cow
