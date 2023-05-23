@@ -28,7 +28,7 @@ function CreateCowButton() {
 */
 
 // Child Component || Modal that allows user to input information about cow they creating
-function CreateCowModal({ getCattle }) {
+function CreateCowModal({ getChanges }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
@@ -42,11 +42,12 @@ function CreateCowModal({ getCattle }) {
     const handleSave = async () => {
         try {
              // Function to send request to API to create cow
-            createCattle(cowName, tag, note, herdId)
+            await createCattle(cowName, tag, note, herdId)
+            getChanges()
 
             // Rerenders pages to reflect changes
             // Basically call getCattle() to refresh the page
-            getCattle()
+            // getCattle()
         } catch (error) {
             console.error(`Failed to create cow: ${error}`)
         }
@@ -96,7 +97,7 @@ function CreateCowModal({ getCattle }) {
 }
 
 // Child Component || Displays modal for editing a cow
-function EditCowModal({ getCattle, currentCow }) {
+function EditCowModal({ currentCow, getChanges }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
@@ -135,10 +136,10 @@ function EditCowModal({ getCattle, currentCow }) {
 
         try {
             // Calls function to send request to api to edit cow
-            updateCow(currentCow.name, currentCow.tag, currentCow.notes, herdId, currentCow._id)
-
+            await updateCow(currentCow.name, currentCow.tag, currentCow.notes, herdId, currentCow._id)
+            getChanges()
             // Get cattle from api to reflect changes in UI
-            getCattle()
+            // getCattle()
         } catch (error) {
             console.error(`Failed to update cow: ${error}`)
         }
@@ -201,7 +202,7 @@ function EditCowModal({ getCattle, currentCow }) {
 }
 
 // Child Component || Renders Card
-function Card({ cattle, getCattle, passCurrentCowData }) {
+function Card({ cattle, passCurrentCowData, getChanges }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
@@ -215,10 +216,10 @@ function Card({ cattle, getCattle, passCurrentCowData }) {
     // Calls function to delete the cow
     const handleDelete = async (cowId) => {
         // Calls function to send request to api to delete cow
-        deleteCattle(cowId, herdId)
-
+        await deleteCattle(cowId, herdId)
+        getChanges()
         // Calls getCattle to reflect changes in UI
-        getCattle()
+        // getCattle()
     }
     
 
@@ -260,6 +261,7 @@ export default function DisplayCattle() {
     // SETS THE STATE FOR THE CATTLE DATA
     const [cattle, setCattle] = useState([])
     const [currentCow, setCurrentCow] = useState([])
+    const [count, setCount] = useState(0)
 
     // Calls the function getCows to make request to api to get all cattle in db
     const getCattle = async () => {
@@ -277,10 +279,14 @@ export default function DisplayCattle() {
         setCurrentCow(cow)
     }
 
+    const getChanges = () => {
+        setCount(count + 1)
+    }
+
     // Controls how often the function is called in each render 
     useEffect(() => {
         getCattle()
-    }, []) 
+    }, [count]) 
 
     return (
         <>
@@ -291,20 +297,32 @@ export default function DisplayCattle() {
                 <h1 className='display display-4'>{herdName}</h1>
             </div>
             <div className='container'>
-                <CreateCowButton />
+                <CreateCowButton 
+                getChanges={getChanges} 
+
+                />
             </div>
             <div>
-                <CreateCowModal getCattle={getCattle}/>
+                <CreateCowModal 
+                getChanges={getChanges} 
+
+                />
             </div>
             <div className='container'>
                 <Card 
                 cattle={cattle} 
-                getCattle={getCattle} 
                 passCurrentCowData={passCurrentCowData}
+                getChanges={getChanges}
+
                 />
             </div>
             <div>
-                <EditCowModal getCattle={getCattle} cattle={cattle} currentCow={currentCow} />
+                <EditCowModal 
+                cattle={cattle} 
+                currentCow={currentCow} 
+                getChanges={getChanges} 
+
+                />
             </div>
         </>
     )

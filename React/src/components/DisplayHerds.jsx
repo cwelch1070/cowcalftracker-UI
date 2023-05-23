@@ -49,7 +49,7 @@ function CreateHerdButton() {
     )
 }
 
-function CreateHerdModal({ getHerdData }) {
+function CreateHerdModal({ getHerdData, getChanges }) {
     // State Variable
     const [herdName, setHerdName] = useState('')
     const [alert, setAlert] = useState('')
@@ -60,8 +60,9 @@ function CreateHerdModal({ getHerdData }) {
             // Calls function to send request to api to create herd
             const data = await createHerd(herdName)
             setAlert(data)
-            // Rerenders UI 
-            getHerdData()
+
+            // Update UI
+            getChanges()
 
             // Clears the text boxs after click
             setHerdName('')
@@ -117,21 +118,34 @@ function CreateHerdModal({ getHerdData }) {
     )
 }
 
-function EditHerdModal({ getHerdData, herdId }) {
+function EditHerdModal({ herdId, getChanges, herds }) {
     // Stores herdName
-    const [herdName, setHerdName] = useState('Herd')
+    const [herdName, setHerdName] = useState('')
 
     // Calls functions when Update button is clicked
-    const handleUpdate = async (herdName) => {
+    const handleUpdate = async () => {
+        const currentHerd = herds.find((herds) => herds._id === herdId)
+        if(herdName !== '') {
+            currentHerd.name = herdName
+        }
+
         try {
             // Calls function to send request to api
-            editHerd(herdName, herdId)
+            await editHerd(currentHerd.name, herdId)
 
-            // Rerenders UI to reflect changes
-            getHerdData()
+            // Update UI
+            getChanges()
+
+            // Clear value
+            setHerdName('')
         } catch (error) {
             console.error(`Failed to update: ${error}`)
         }
+    }
+
+    // Handle the changes of the herd name
+    const handleNameChange = (e) => {
+        setHerdName(e.target.value)
     }
     
     return (
@@ -160,7 +174,7 @@ function EditHerdModal({ getHerdData, herdId }) {
                     <form>
                         <div className="input-group">
                             <span className="input-group-text">Name</span>
-                            <input className="form-control" type="text" id="herd-name" placeholder="Rename Herd" value={herdName} onChange={e => setHerdName(e.target.value)}/>
+                            <input className="form-control" type="text" id="herd-name" placeholder="Rename Herd" value={herdName} onChange={handleNameChange}/>
                         </div>
                     </form>
                     </div>
@@ -175,14 +189,14 @@ function EditHerdModal({ getHerdData, herdId }) {
     )
 }
 
-function Card({ getHerdData, herds, getCurrentHerdId }) {
+function Card({ getHerdData, herds, getCurrentHerdId, getChanges }) {
     const handleDelete = async (herdId) => {
         try {
-            // 
+            // Call delete function
             deleteHerd(herdId)
 
-            // 
-            getHerdData()
+            // Update UI
+            getChanges()
         } catch (error) {
             console.error(`Failed to delete: ${error}`)
         }     
@@ -222,6 +236,7 @@ export default function DisplayHerds() {
     const [herdId, setHerdId] = useState('')
     // STORES AND KEEPS TRACK OF ALL HERD DATA OF HERD THAT IS CURRENTLY SELECTED
     const [herds, setHerds] = useState([])
+    const [count, setCount] = useState(0)
     // SENDS FETCH REQUEST TO SERVER TO GET ALL HERD DATA
     const getHerdData = async () => {
         const data = await getHerd()
@@ -232,6 +247,10 @@ export default function DisplayHerds() {
         setHerdId(curretnHerdId)
     }
 
+    const getChanges = () => {
+        setCount(count + 1)
+    }
+
     /* 
         The useEffect hook allows the dashboard to continue to updated 
         without having to refresh the page. It does this by allowing a
@@ -239,15 +258,26 @@ export default function DisplayHerds() {
     */
     useEffect(() => {
         getHerdData()
-    }, [])
+    }, [count])
 
     return (
         <div className='container'>
             <h1 className="display display-4">Available Herds</h1>
             <CreateHerdButton />
-            <Card herds={herds} getCurrentHerdId={passCurrentHerdId} getHerdData={getHerdData}  />
-            <CreateHerdModal getHerdData={getHerdData} />
-            <EditHerdModal herdId={herdId} getHerdData={getHerdData}/>
+            <Card 
+            herds={herds} 
+            getCurrentHerdId={passCurrentHerdId}  
+            getChanges={getChanges}
+            />
+            <CreateHerdModal  
+            getChanges={getChanges}
+            herds={herds}
+            />
+            <EditHerdModal 
+            herdId={herdId} 
+            getChanges={getChanges}
+            herds={herds}
+            />
         </div>
     )
 }

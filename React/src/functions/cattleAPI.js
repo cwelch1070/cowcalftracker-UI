@@ -19,6 +19,8 @@ export const createCattle = async (cowName, tag, note, herdId) => {
         // Gets return from api
         const data = await res.json()
         console.log(data)
+
+        return 'Created'
 }
 
 // Gets all cattle from db
@@ -57,6 +59,8 @@ export const updateCow = async (cowName, tag, note, herdId, cowId) => {
         // Gets return from api
         const data = await res.json() 
         console.log(data)
+
+        return 'Updated'
 }
 
 // Delete Cow from db
@@ -76,4 +80,6 @@ export const deleteCattle = async (cowId, herdId) => {
         const data = await res.json()
         // Logs to console
         console.log(data)
+
+        return 'Deleted'
 }
