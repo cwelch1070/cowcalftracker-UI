@@ -208,6 +208,7 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
     // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
+    // Pass current cow id to parent to be used in edit herd component
     const currentCowData = (cowId) => {
         const currentCow = cattle.find(cow => cow._id === cowId)
         passCurrentCowData(currentCow)
@@ -235,6 +236,7 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
                                     <div className='dropdown'>
                                         <button id='options-btn' className='btn dropdown-toggle' type='button' data-bs-toggle='dropdown'>. . .</button>
                                         <ul className='dropdown-menu'>
+                                            <button className='dropdown-item'>Add Calf</button>
                                             <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop3" onClick={() => currentCowData(cow._id)}>Edit</button>
                                             <button className='dropdown-item' onClick={() => handleDelete(cow._id)}>Delete</button>
                                         </ul>
