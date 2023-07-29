@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { createCattle, updateCow, getCows, deleteCattle } from '../functions/cattleAPI'
+import { createCalf } from '../functions/calvesAPI'
 import NavBar from './NavBar'
 import '../css/DisplayCattle.css'
 
@@ -120,7 +121,7 @@ function EditCowModal({ currentCow, getChanges }) {
             field would revert back to its original value.
         */
 
-        // These if statement make sure that the value being passed in from state 
+        // These if statements make sure that the value being passed in from state 
         // is not an empty string before updating the cow.
         if(cowName !== '') {
             currentCow.name = cowName
@@ -201,6 +202,81 @@ function EditCowModal({ currentCow, getChanges }) {
     )
 }
 
+// Child Compenent || Modal to add calves to cow
+function AddCalfModal({ currentCow, getChanges}) {
+    // State Variables
+    const [calfName, setCalfName] = useState('')
+    const [tag, setTag] = useState('')
+    const [note, setNote] = useState('')
+    
+    // Calls the updateCow function to update the cow
+    // then calls getCattle to rerender UI and clears the form
+    const handleCalfCreate = async () => {
+        console.log(currentCow._id)
+        try {
+            await createCalf(calfName, tag, note, currentCow._id)
+            getChanges()
+        } catch (error) {
+            console.error(`Failed to add calf: ${error}`)
+        }
+
+        // Reset state value
+        setCalfName('')
+        setTag('')
+        setNote('')
+    }
+
+    // Sets state object when name is input
+    const handleNameChange = (e) => {  
+        setCalfName(e.target.value)  
+    }
+
+    // Sets state object when tag is input
+    const handleTagChange = (e) => {
+        setTag(e.target.value)   
+    }
+
+    // Sets state object when note is changes
+    const handleNoteChange = (e) => {
+        setNote(e.target.value)
+    }
+
+    return (
+        <>
+            <div className="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel4" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel4">Add Calf</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+                        </div>
+                        <div className="modal-body">
+                            <form>
+                                <div className="input-group">
+                                    <span className="input-group-text">Name</span>
+                                    <input className="form-control" type="text" id="herd-name" value={calfName} placeholder="(Optional)" onChange={handleNameChange}/>
+                                </div>
+                                <div className='input-group mt-2'>
+                                    <span className="input-group-text">Tag</span>
+                                    <input className="form-control" type="text" id="herd-name" value={tag} placeholder="#" onChange={handleTagChange}/>
+                                </div>
+                                <div className='input-group mt-2'>
+                                    <span className="input-group-text">Notes</span>
+                                    <input className="form-control" type="text" id="herd-name" value={note} placeholder="Notes" onChange={handleNoteChange}/>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" className="btn btn-success" id="save-herd" onClick={() => handleCalfCreate()}>Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
 // Child Component || Renders Card
 function Card({ cattle, passCurrentCowData, getChanges }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
@@ -208,7 +284,7 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
     // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
-    // Pass current cow id to parent to be used in edit herd component
+    // Pass current cow id to parent to be used in edit herd and add calf component
     const currentCowData = (cowId) => {
         const currentCow = cattle.find(cow => cow._id === cowId)
         passCurrentCowData(currentCow)
@@ -236,13 +312,14 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
                                     <div className='dropdown'>
                                         <button id='options-btn' className='btn dropdown-toggle' type='button' data-bs-toggle='dropdown'>. . .</button>
                                         <ul className='dropdown-menu'>
-                                            <button className='dropdown-item'>Add Calf</button>
+                                            <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop4" onClick={() => currentCowData(cow._id)}>Add Calf</button>
                                             <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop3" onClick={() => currentCowData(cow._id)}>Edit</button>
                                             <button className='dropdown-item' onClick={() => handleDelete(cow._id)}>Delete</button>
                                         </ul>
                                     </div>
                                 </div>
                                 <p className="card-text">Tag: {cow.tag}</p>
+                                <p className="card-text">Calves: Comming Soon!</p>
                                 <p className='card-text'>Notes: {cow.notes}</p>
                             </div>
                         </div>
@@ -277,6 +354,7 @@ export default function DisplayCattle() {
         }
     }
     
+    // Passes data of current cow selected by user
     const passCurrentCowData = (cow) => {
         setCurrentCow(cow)
     }
@@ -324,6 +402,12 @@ export default function DisplayCattle() {
                 currentCow={currentCow} 
                 getChanges={getChanges} 
 
+                />
+            </div>
+            <div>
+                <AddCalfModal
+                currentCow={currentCow}
+                getChanges={getChanges}
                 />
             </div>
         </>
