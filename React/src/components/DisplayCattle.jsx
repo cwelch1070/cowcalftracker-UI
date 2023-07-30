@@ -299,7 +299,6 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
         // getCattle()
     }
     
-
     return (
         <>
             {cattle.length > 0 && (
