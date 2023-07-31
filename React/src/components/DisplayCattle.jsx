@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { createCattle, updateCow, getCows, deleteCattle } from '../functions/cattleAPI'
-import { createCalf } from '../functions/calvesAPI'
+import { createCalf, getCalf } from '../functions/calvesAPI'
 import NavBar from './NavBar'
 import '../css/DisplayCattle.css'
 
@@ -207,6 +207,7 @@ function AddCalfModal({ currentCow, getChanges}) {
     // State Variables
     const [calfName, setCalfName] = useState('')
     const [tag, setTag] = useState('')
+    const [gender, setGender] = useState('')
     const [note, setNote] = useState('')
     
     // Calls the updateCow function to update the cow
@@ -214,7 +215,7 @@ function AddCalfModal({ currentCow, getChanges}) {
     const handleCalfCreate = async () => {
         console.log(currentCow._id)
         try {
-            await createCalf(calfName, tag, note, currentCow._id)
+            await createCalf(calfName, tag, gender, note, currentCow._id)
             getChanges()
         } catch (error) {
             console.error(`Failed to add calf: ${error}`)
@@ -223,6 +224,7 @@ function AddCalfModal({ currentCow, getChanges}) {
         // Reset state value
         setCalfName('')
         setTag('')
+        setGender('')
         setNote('')
     }
 
@@ -241,6 +243,10 @@ function AddCalfModal({ currentCow, getChanges}) {
         setNote(e.target.value)
     }
 
+    const handleGenderChange = (e) => {
+        setGender(e.target.value)
+    }
+
     return (
         <>
             <div className="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel4" aria-hidden="true">
@@ -254,15 +260,19 @@ function AddCalfModal({ currentCow, getChanges}) {
                             <form>
                                 <div className="input-group">
                                     <span className="input-group-text">Name</span>
-                                    <input className="form-control" type="text" id="herd-name" value={calfName} placeholder="(Optional)" onChange={handleNameChange}/>
+                                    <input className="form-control" type="text" value={calfName} placeholder="(Optional)" onChange={handleNameChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Tag</span>
-                                    <input className="form-control" type="text" id="herd-name" value={tag} placeholder="#" onChange={handleTagChange}/>
+                                    <input className="form-control" type="text" value={tag} placeholder="#" onChange={handleTagChange}/>
+                                </div>
+                                <div className='input-group mt-2'>
+                                    <span className="input-group-text">Gender</span>
+                                    <input className="form-control" type="text" value={gender} placeholder="Gender" onChange={handleGenderChange}/>
                                 </div>
                                 <div className='input-group mt-2'>
                                     <span className="input-group-text">Notes</span>
-                                    <input className="form-control" type="text" id="herd-name" value={note} placeholder="Notes" onChange={handleNoteChange}/>
+                                    <input className="form-control" type="text" value={note} placeholder="Notes" onChange={handleNoteChange}/>
                                 </div>
                             </form>
                         </div>
@@ -278,7 +288,7 @@ function AddCalfModal({ currentCow, getChanges}) {
 }
 
 // Child Component || Renders Card
-function Card({ cattle, passCurrentCowData, getChanges }) {
+function Card({ cattle, calf, passCurrentCowData, getChanges }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
     // Allows this component to use herdId like a state variable
@@ -295,8 +305,6 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
         // Calls function to send request to api to delete cow
         await deleteCattle(cowId, herdId)
         getChanges()
-        // Calls getCattle to reflect changes in UI
-        // getCattle()
     }
     
     return (
@@ -318,7 +326,7 @@ function Card({ cattle, passCurrentCowData, getChanges }) {
                                     </div>
                                 </div>
                                 <p className="card-text">Tag: {cow.tag}</p>
-                                <p className="card-text">Calves: Comming Soon!</p>
+                                <p className="card-text">Calves: {}</p>
                                 <p className='card-text'>Notes: {cow.notes}</p>
                             </div>
                         </div>
@@ -338,6 +346,7 @@ export default function DisplayCattle() {
 
     // SETS THE STATE FOR THE CATTLE DATA
     const [cattle, setCattle] = useState([])
+    const [calf, setCalf] = useState([])
     const [currentCow, setCurrentCow] = useState([])
     const [count, setCount] = useState(0)
 
@@ -352,6 +361,20 @@ export default function DisplayCattle() {
             console.error(`Could not get cattle: ${error}`)
         }
     }
+
+    const getCurrentCalf = async () => { 
+        const currentCalf = await getCalf(currentCow) 
+
+        console.log('Called')
+
+        let calf
+
+        currentCalf.forEach((e) => {
+            console.log(e.gender)
+        })
+
+        setCalf(currentCalf) 
+    }
     
     // Passes data of current cow selected by user
     const passCurrentCowData = (cow) => {
@@ -365,6 +388,7 @@ export default function DisplayCattle() {
     // Controls how often the function is called in each render 
     useEffect(() => {
         getCattle()
+        getCurrentCalf()
     }, [count]) 
 
     return (
@@ -390,6 +414,7 @@ export default function DisplayCattle() {
             <div className='container'>
                 <Card 
                 cattle={cattle} 
+                calf={calf}
                 passCurrentCowData={passCurrentCowData}
                 getChanges={getChanges}
 
