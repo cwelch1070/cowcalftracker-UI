@@ -20,14 +20,12 @@ export const createCalf = async (calfName, tag, gender, note, dam) => {
 
     const data = await res.json()
 
-    console.log(data)
-
     return 'Created'
 }
 
 // Get calf by dam Id
 export const getCalf = async (dam) => {
-    const res = fetch(`${api}/calves/${dam}`, {
+    const res = await fetch(`${api}/calves/${dam}`, {
         method: 'GET',
         mode: 'cors',
         headers: {

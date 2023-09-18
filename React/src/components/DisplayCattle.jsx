@@ -288,9 +288,10 @@ function AddCalfModal({ currentCow, getChanges}) {
 }
 
 // Child Component || Renders Card
-function Card({ cattle, calf, passCurrentCowData, getChanges }) {
+function Card({ cattle, calf, passCurrentCowData, getChanges, getCurrentCalf }) {
     // Works like local storage and allows this file to have acces to herdId from DisplayHerd.jsx
     const location = useLocation()
+
     // Allows this component to use herdId like a state variable
     const { herdId } = location.state
 
@@ -326,7 +327,7 @@ function Card({ cattle, calf, passCurrentCowData, getChanges }) {
                                     </div>
                                 </div>
                                 <p className="card-text">Tag: {cow.tag}</p>
-                                <p className="card-text">Calves: {}</p>
+                                <p className="card-text">Calves: {cow.calf}</p>
                                 <p className='card-text'>Notes: {cow.notes}</p>
                             </div>
                         </div>
@@ -365,15 +366,9 @@ export default function DisplayCattle() {
     const getCurrentCalf = async () => { 
         const currentCalf = await getCalf(currentCow) 
 
-        console.log('Called')
-
-        let calf
-
-        currentCalf.forEach((e) => {
-            console.log(e.gender)
-        })
-
         setCalf(currentCalf) 
+
+        console.log(calf)
     }
     
     // Passes data of current cow selected by user
@@ -388,7 +383,6 @@ export default function DisplayCattle() {
     // Controls how often the function is called in each render 
     useEffect(() => {
         getCattle()
-        getCurrentCalf()
     }, [count]) 
 
     return (
@@ -417,6 +411,7 @@ export default function DisplayCattle() {
                 calf={calf}
                 passCurrentCowData={passCurrentCowData}
                 getChanges={getChanges}
+                getCurrentCalf={getCurrentCalf}
 
                 />
             </div>
