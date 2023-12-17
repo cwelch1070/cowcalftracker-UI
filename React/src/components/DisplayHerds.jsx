@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getHerd, editHerd, createHerd, deleteHerd } from '../functions/herdAPI'
+import { getHerd, editHerd, createHerd, deleteHerd } from '../API-Requests/herdAPI'
 import '../css/DisplayHerds.css'
 
 function HerdCreatedAlert({ alert }) {

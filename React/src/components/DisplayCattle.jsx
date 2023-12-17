@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
-import { createCattle, updateCow, getCows, deleteCattle } from '../functions/cattleAPI'
-import { createCalf, getCalf } from '../functions/calvesAPI'
+import { createCattle, updateCow, getCows, deleteCattle } from '../API-Requests/cattleAPI'
+import { createCalf, getCalf } from '../API-Requests/calvesAPI'
 import NavBar from './NavBar'
 import '../css/DisplayCattle.css'
 

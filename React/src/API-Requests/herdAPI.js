@@ -1,5 +1,5 @@
 // Import auth file to get session token for auth
-import { getToken } from '../auth/store-token'
+import { getToken } from '../user-auth/store-token'
 
 const api = process.env.REACT_APP_API
 
