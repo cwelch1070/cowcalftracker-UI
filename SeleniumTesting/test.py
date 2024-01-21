@@ -21,7 +21,7 @@ class cowcalftracker:
         self.notes = notes
          
         # Opens Instagram login page
-        self.driver.get("http://www.cowcalftracker.com")
+        self.driver.get("https://www.cowcalftracker.com")
         sleep(5) 
         
         def createHerd():
@@ -72,7 +72,7 @@ class cowcalftracker:
 
                 # Added cattle tag
                 self.driver.find_element(By.XPATH, '/html/body/div[1]/div[4]/div/div/div/div[2]/form/div[2]/input').send_keys(tagNum)
-                sleep(1)
+                sleep(1) 
                 
                 # Add cattle note
                 self.driver.find_element(By.XPATH, '/html/body/div[1]/div[4]/div/div/div/div[2]/form/div[3]/input').send_keys(self.notes, ' ', i + 1)
