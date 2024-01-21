@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import '../css/auth-pages.css'
-import { createUser } from '../functions/loginAPI'
+import { createUser } from '../API-Requests/loginAPI'
 
 // Renders the Create Account page
 export default function CreateAccount() {
