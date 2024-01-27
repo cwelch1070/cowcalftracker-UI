@@ -2,34 +2,55 @@ import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { getHerd } from "../API-Requests/herdAPI"
 
-function Dropdown() {
-    const [herds, setHerds] = useState([])
-
-    const getHerdData = async () => {
-        const data = await getHerd()
-        setHerds(data)
-    }
-
-    useEffect(() => {
-        getHerdData()            
-    }, [1])
-
+function Dropdown({ herds }) {
     return (
       <>
-        {herds.length > 0 && (
-          <div>
-            {herds.map((herd) => (
-              <div key={herd._id}>
-                <li><Link to='/Attendance' state={{herdId: herd._id, herdName: herd.name}} className='dropdown-item'>{herd.name}</Link></li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Attendance
+          </a>
+          <ul class="dropdown-menu">
+            {herds.length > 0 && (
+              <div>
+                {herds.map((herd) => (
+                  <div key={herd._id}>
+                    <li>
+                      <Link
+                        to="/Attendance"
+                        state={{ herdId: herd._id, herdName: herd.name }}
+                        className="dropdown-item"
+                      >
+                        {herd.name}
+                      </Link>
+                    </li>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
+          </ul>
+        </li>
       </>
     );
 }
 
 export default function NavBar() {
+    const [herds, setHerds] = useState([])
+
+    const getHerdData = async () => {
+        const data = await getHerd()
+        setHerds(data)
+    }           
+
+    useEffect(() => {
+       getHerdData()
+    }, [])
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-success">
             <div className="container-fluid">
@@ -49,14 +70,7 @@ export default function NavBar() {
                     <li className="nav-item">
                         <a className="nav-link" href="https://github.com/cwelch1070/cowcalftracker">Github</a>
                     </li>
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={}>
-                        Attendance
-                    </a>
-                    <ul class="dropdown-menu">
-                        <Dropdown />
-                    </ul>
-                </li>
+                    <Dropdown herds = {herds}/>
                 </ul>
                 <form className="d-flex" role="search">
                     <input className="form-control me-2" type="search" placeholder="Search Cattle" aria-label="Search"/>
