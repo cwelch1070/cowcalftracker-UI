@@ -1,3 +1,17 @@
 #cattle-check-box {
     width: 100%;
 }
+
+#save-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+#save-btn-div {
+    width: 100%;
+    margin: 0px 0px 8px;
+    padding: 0px 0px 0px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
