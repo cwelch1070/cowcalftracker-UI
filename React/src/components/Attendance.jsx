@@ -1,19 +1,69 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from 'react-router-dom'
+import { getCows } from '../API-Requests/cattleAPI'
+import { submitAttendance } from '../API-Requests/attendanceAPI'
+import Navbar from './NavBar'
+import '../css/CattleCheckbox.css'
 
-function Checklist() {
-
+function Checklist({ cattle, getCheckedCattle }) {
     return (
         <div>
-            Welcome to the attendance page!
+            {cattle.length > 0 && (
+                <div>
+                    {cattle.map((cow) => (
+                        <div key={cow._id} className="form-check mb-2" >
+                             <input type="checkbox" className="btn-check" id={cow._id} unchecked="true" autoComplete="off" onClick={() => getCheckedCattle(cow._id)}></input>
+                             <label className="btn btn-outline-success" id="cattle-check-box" for={cow._id}>{cow.name} {cow.tag}</label>
+                             <br></br>
+                        </div>
+                    ))}
+                 </div>    
+                )}   
+        </div>
+    )
+}
+
+function SubmitButton({ handleSave }) {
+    return (
+        <div id="save-btn-div">
+            <button type="submit" className="btn btn-primary" id="save-btn" onClick={() => handleSave()}>Save</button>
         </div>
     )
 }
 
 export default function Attendance() {
+    const location = useLocation()
+    const { herdId, herdName } = location.state
+    const [cattle, setCattle] = useState([])
+    const [checked, setChecked] = useState([])
+
+    const getCattleData = async () => {
+        const data = await getCows(herdId)
+        setCattle(data)
+    }
+
+    const getCheckedCattle = (cowId) => {
+        setChecked([...checked, { id: cowId}])
+    }
+
+    const handleSave = async () => {
+        await submitAttendance(checked)
+    }
+
+    useEffect(() => {
+        getCattleData()
+    }, [])
 
     return (
         <>
-            <Checklist />
+            <div>
+                <Navbar />
+            </div>
+            <div className="container">
+                <h1 className="display display-4">{herdName}</h1>
+                <Checklist cattle = {cattle} getCheckedCattle={getCheckedCattle}  />
+                <SubmitButton handleSave = {handleSave} />
+            </div>
         </>
     )
 }
