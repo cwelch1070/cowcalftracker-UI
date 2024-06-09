@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getHerd, editHerd, createHerd, deleteHerd } from '../functions/herdAPI'
+import { getHerd, editHerd, createHerd, deleteHerd } from '../API-Requests/herdAPI'
 import '../css/DisplayHerds.css'
 
 function HerdCreatedAlert({ alert }) {
@@ -215,6 +215,7 @@ function Card({ getHerdData, herds, getCurrentHerdId, getChanges }) {
                                         <button id='options-btn' className='btn dropdown-toggle' type='button' data-bs-toggle='dropdown'>. . .</button>
                                         <ul className='dropdown-menu'>
                                             <Link to='/Cattle' state={{herdId: herd._id, herdName: herd.name}} className='dropdown-item'>Cattle</Link>
+                                            <Link to='/Records' state={{herdId: herd._id, herdName: herd.name}} className='dropdown-item'>Records</Link>
                                             <button className='dropdown-item' data-bs-toggle="modal" data-bs-target="#staticBackdrop2" onClick={() => getCurrentHerdId(herd._id)}>Edit Herd</button>
                                             <button className='dropdown-item' onClick={() => handleDelete(herd._id)}>Delete Herd</button>
                                         </ul>

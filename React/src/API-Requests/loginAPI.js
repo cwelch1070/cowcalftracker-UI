@@ -1,6 +1,6 @@
 // setToken function to authenticate the current session 
 // scp -r -P 43776 D:\cwelch\cowcalftracker.com\cowcalftracker-UI\React\build webapp@45.58.52.73:/home/webapp/react
-import { setToken } from '../auth/store-token';
+import { setToken } from '../user-auth/store-token';
 
 // Get api path from .env
 const api = process.env.REACT_APP_API
