@@ -6,6 +6,7 @@ import CreateAccount from './components/CreateAccount'
 import DisplayCattle from './components/DisplayCattle'
 import Attendance from './components/Attendance';
 import ErrorPage from './components/error-page'
+import DisplayAttendanceRecords from './components/DisplayAttendanceRecords';
 
 const router = createBrowserRouter([
   {
@@ -22,12 +23,6 @@ const router = createBrowserRouter([
     path: '/Dashboard',
     element: <Dashboard />,
     errorElement: <ErrorPage />,
-    // children: [
-    //   {
-    //     path: 'cattle',
-    //     element: <Main /> 
-    //   },
-    // ],
   },
   {
     path: '/Cattle',
@@ -38,11 +33,12 @@ const router = createBrowserRouter([
     path: '/Attendance',
     element: <Attendance />,
     errorElement: <ErrorPage />
+  },
+  {
+    path: '/Records',
+    element: <DisplayAttendanceRecords />,
+    errorElement: <ErrorPage />
   }
 ])
-
-/* function App() {
-  
-} */
 
 export default router;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import { getCows } from '../API-Requests/cattleAPI'
 import { submitAttendance } from '../API-Requests/attendanceAPI'
 import Navbar from './NavBar'
@@ -23,10 +23,10 @@ function Checklist({ cattle, getCheckedCattle }) {
     )
 }
 
-function SubmitButton({ handleSave }) {
+function SubmitButton({ handleSave, herdId, herdName }) {
     return (
         <div id="save-btn-div">
-            <button type="submit" className="btn btn-primary" id="save-btn" onClick={() => handleSave()}>Save</button>
+            <Link type="submit" className="btn btn-primary" id="save-btn" to='/Records' state={{ herdId: herdId, herdName: herdName }} onClick={() => handleSave()}>Save</Link>
         </div>
     )
 }
@@ -62,7 +62,7 @@ export default function Attendance() {
             <div className="container">
                 <h1 className="display display-4">{herdName}</h1>
                 <Checklist cattle = {cattle} getCheckedCattle={getCheckedCattle}  />
-                <SubmitButton handleSave = {handleSave} />
+                <SubmitButton handleSave = {handleSave} herdId = {herdId} herdName = {herdName} />
             </div>
         </>
     )
