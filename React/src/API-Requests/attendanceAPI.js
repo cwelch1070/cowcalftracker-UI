@@ -16,3 +16,19 @@ export const submitAttendance = async (attendance) => {
 
     return data
 }
+
+export const getAttendanceRecords = async (herdId) => {
+    const res = await fetch(`${api}/attendance/${herdId}`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    // Gets return from api
+    const data = await res.json()
+    
+    // Returns json data to be used in component
+    return data
+}
