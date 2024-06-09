@@ -12,8 +12,8 @@ function Checklist({ cattle, getCheckedCattle }) {
                 <div>
                     {cattle.map((cow) => (
                         <div key={cow._id} className="form-check mb-2" >
-                             <input type="checkbox" className="btn-check" id={cow._id} unchecked="true" autoComplete="off" onClick={() => getCheckedCattle(cow._id)}></input>
-                             <label className="btn btn-outline-success" id="cattle-check-box" for={cow._id}>{cow.name} {cow.tag}</label>
+                             <input type="checkbox" className="btn-check" id={cow._id} unchecked="true" autoComplete="off" onClick={() => getCheckedCattle(cow._id, cow.herd)}></input>
+                             <label className="btn btn-outline-success" id="cattle-check-box" htmlFor={cow._id}>{cow.name} {cow.tag}</label>
                              <br></br>
                         </div>
                     ))}
@@ -42,8 +42,8 @@ export default function Attendance() {
         setCattle(data)
     }
 
-    const getCheckedCattle = (cowId) => {
-        setChecked([...checked, { id: cowId}])
+    const getCheckedCattle = (cowId, herdId) => {
+        setChecked([...checked, { cowId: cowId, herdId: herdId }])
     }
 
     const handleSave = async () => {

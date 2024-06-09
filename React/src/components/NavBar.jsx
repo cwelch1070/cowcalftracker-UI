@@ -5,9 +5,9 @@ import { getHerd } from "../API-Requests/herdAPI"
 function Dropdown({ herds }) {
     return (
       <>
-        <li class="nav-item dropdown">
+        <li className="nav-item dropdown">
           <a
-            class="nav-link dropdown-toggle"
+            className="nav-link dropdown-toggle"
             href="#"
             role="button"
             data-bs-toggle="dropdown"
@@ -15,7 +15,7 @@ function Dropdown({ herds }) {
           >
             Attendance
           </a>
-          <ul class="dropdown-menu">
+          <ul className="dropdown-menu">
             {herds.length > 0 && (
               <div>
                 {herds.map((herd) => (
