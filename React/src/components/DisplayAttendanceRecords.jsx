@@ -14,7 +14,7 @@ function Card({ records }) {
                                 <div id='title-group'>
                                     <h5 className="card-title mb-3" id='herd-name'>{record.cowName}</h5>
                                 </div>
-                                <p className="card-text">Cattle: {record.tag}</p>
+                                <p className="card-text">Tag: {record.tag}</p>
                                 <p className="card-text">Status: {record.accountedFor ? 'Present' : 'Missing'}</p>
                                 <p className='card-text'>Accounted for on: {record.date}</p>
                             </div>
