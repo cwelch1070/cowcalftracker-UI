@@ -1,0 +1,51 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 'v18.12.0'  # Use the version your project requires
+
+    - name: Install dependencies and build frontend
+      working-directory: frontend
+      run: |
+        npm install
+        npm run build
+
+    - name: Install dependencies and build backend
+      working-directory: backend
+      run: |
+        npm install  
+
+    - name: Deploy frontend
+      uses: easingthemes/ssh-deploy@v2.1.5
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-rltgoDzvO --delete"
+        SOURCE: "react/build"
+        REMOTE_HOST: "45.58.52.73"
+        REMOTE_USER: "webapp"
+        TARGET: "react/build"
+
+    - name: Deploy backend
+      run: |
+        echo "$SSH_PRIVATE_KEY" > /tmp/private_key
+        chmod 600 /tmp/private_key
+        rsync -avz -e "ssh -i /tmp/private_key -o StrictHostKeyChecking=no" backend/ webapp@45.58.52.73:api/cowcalftracker/
+        ssh -i /tmp/private_key -o StrictHostKeyChecking=no webapp@45.58.52.73 <<EOF
+          cd api/cowcalftracker/server
+          npm install
+          pm2 restart all
+        EOF
