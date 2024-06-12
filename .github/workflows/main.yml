@@ -32,7 +32,7 @@ jobs:
     - name: Deploy frontend
       uses: easingthemes/ssh-deploy@v2.1.5
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.DEPLOYMENTKEY }}
         ARGS: "-rltgoDzvO --delete"
         SOURCE: "react/build"
         REMOTE_HOST: "45.58.52.73"
@@ -41,7 +41,7 @@ jobs:
 
     - name: Deploy backend
       run: |
-        echo "$SSH_PRIVATE_KEY" > /tmp/private_key
+        echo "$DEPLOYMENTKEY" > /tmp/private_key
         chmod 600 /tmp/private_key
         rsync -avz -e "ssh -i /tmp/private_key -o StrictHostKeyChecking=no" backend/ webapp@45.58.52.73:api/cowcalftracker/
         ssh -i /tmp/private_key -o StrictHostKeyChecking=no webapp@45.58.52.73 <<EOF
