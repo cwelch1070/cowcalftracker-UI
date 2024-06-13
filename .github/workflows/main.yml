@@ -33,6 +33,9 @@ jobs:
       env:
         CI: false
 
+    - name: Copy build files to temporary location
+      run: cp -r frontend/build /tmp/frontend_build
+
     - name: Deploy frontend
       uses: easingthemes/ssh-deploy@v2.1.5
       env:
