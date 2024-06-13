@@ -19,13 +19,13 @@ jobs:
         node-version: 'v18.12.0'  # Use the version your project requires
 
     - name: Install dependencies and build frontend
-      working-directory: frontend
+      working-directory: cowcalftracker-UI/React 
       run: |
         npm install
         npm run build
 
     - name: Install dependencies and build backend
-      working-directory: backend
+      working-directory: cowcalftracker-Backend/server
       run: |
         npm install  
 
