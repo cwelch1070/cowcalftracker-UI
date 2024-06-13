@@ -23,11 +23,15 @@ jobs:
       run: |
         npm install
         npm run build
+      env:
+        CI: false
 
     - name: Install dependencies and build backend
       working-directory: server
       run: |
         npm install  
+      env:
+        CI: false
 
     - name: Deploy frontend
       uses: easingthemes/ssh-deploy@v2.1.5
